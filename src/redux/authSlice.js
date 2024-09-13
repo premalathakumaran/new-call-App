@@ -82,26 +82,141 @@
 
 // // this is deployed code for login and it is find code --------------------//
 
+// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
+
+// // Thunk to handle login
+// export const loginUser = createAsyncThunk(
+//   'auth/loginUser',
+//   async (loginData, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post('http://13.202.193.62:8085/user/login', {
+//         emailId: loginData.email, // Assuming emailId based on previous error
+//         password: loginData.password
+//       });
+
+//       // Save JWT token to localStorage
+//       const { jwt, ...userData } = response.data;
+//       localStorage.setItem('jwt', jwt); // Save token locally for future requests
+
+//       return { jwt, ...userData }; // Pass user data to Redux state
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || { message: 'Login failed' });
+//     }
+//   }
+// );
+
+// const authSlice = createSlice({
+//   name: 'auth',
+//   initialState: {
+//     user: null,
+//     jwt: null, // Store JWT token in state
+//     loading: false,
+//     error: null,
+//   },
+//   reducers: {
+//     logout: (state) => {
+//       state.user = null;
+//       state.jwt = null;
+//       localStorage.removeItem('jwt'); // Clear token on logout
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(loginUser.pending, (state) => {
+//         state.loading = true;
+//         state.error = null;
+//       })
+//       .addCase(loginUser.fulfilled, (state, action) => {
+//         state.loading = false;
+//         state.user = action.payload; // Set user data
+//         state.jwt = action.payload.jwt; // Set JWT token
+//       })
+//       .addCase(loginUser.rejected, (state, action) => {
+//         state.loading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export const { logout } = authSlice.actions;
+// export default authSlice.reducer;
+
+
+
+
+// main code with backend api-------------------------------
+
+// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
+
+// // Async thunk for user login
+// export const loginUser = createAsyncThunk('auth/loginUser', async (credentials, { rejectWithValue }) => {
+//   try {
+//     // Use the correct login endpoint and payload structure
+//     const response = await axios.post('http://13.202.193.62:8085/user/login', {
+//       emailId: credentials.email, // Correct field name
+//       password: credentials.password
+//     });
+//     localStorage.setItem('jwt', response.data.jwt); // Store JWT token
+//     return response.data;
+//   } catch (error) {
+//     return rejectWithValue(error.response.data.message || 'Failed to login');
+//   }
+// });
+
+// const authSlice = createSlice({
+//   name: 'auth',
+//   initialState: {
+//     user: null,
+//     token: null,
+//     loading: false,
+//     error: null,
+//   },
+//   reducers: {},
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(loginUser.pending, (state) => {
+//         state.loading = true;
+//       })
+//       .addCase(loginUser.fulfilled, (state, action) => {
+//         state.user = {
+//           username: action.payload.username,
+//           email: action.payload.email,
+//           userType: action.payload.userType
+//         };
+//         state.token = action.payload.jwt; // Set JWT token
+//         state.loading = false;
+//         state.error = null;
+//       })
+//       .addCase(loginUser.rejected, (state, action) => {
+//         state.loading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export default authSlice.reducer;
+
+//--------------------------------------------------------------------------
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Thunk to handle login
+// Async thunk for user login
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async (loginData, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
+      // Use the correct login endpoint and payload structure
       const response = await axios.post('http://13.202.193.62:8085/user/login', {
-        emailId: loginData.email, // Assuming emailId based on previous error
-        password: loginData.password
+        emailId: credentials.email, // Correct field name
+        password: credentials.password
       });
-
-      // Save JWT token to localStorage
-      const { jwt, ...userData } = response.data;
-      localStorage.setItem('jwt', jwt); // Save token locally for future requests
-
-      return { jwt, ...userData }; // Pass user data to Redux state
+      localStorage.setItem('jwt', response.data.jwt); // Store JWT token
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Login failed' });
+      return rejectWithValue(error.response?.data?.message || 'Failed to login');
     }
   }
 );
@@ -110,15 +225,15 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    jwt: null, // Store JWT token in state
+    token: localStorage.getItem('jwt') || null, // Initialize with token from localStorage if available
     loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.jwt = null;
-      localStorage.removeItem('jwt'); // Clear token on logout
+      state.token = null;
+      localStorage.removeItem('jwt');
     },
   },
   extraReducers: (builder) => {
@@ -128,9 +243,14 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = {
+          username: action.payload.username,
+          email: action.payload.email,
+          userType: action.payload.userType,
+        };
+        state.token = action.payload.jwt; // Set JWT token
         state.loading = false;
-        state.user = action.payload; // Set user data
-        state.jwt = action.payload.jwt; // Set JWT token
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -140,5 +260,10 @@ const authSlice = createSlice({
 });
 
 export const { logout } = authSlice.actions;
-export default authSlice.reducer;
 
+export const selectUser = (state) => state.auth.user;
+export const selectToken = (state) => state.auth.token;
+export const selectAuthLoading = (state) => state.auth.loading;
+export const selectAuthError = (state) => state.auth.error;
+
+export default authSlice.reducer;

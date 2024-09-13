@@ -142,33 +142,227 @@
 
 // sample code for trying but it working based on my functionallity  with deleting the particular item from the table without closing the form ------------------------------------------------
 
-import { createSlice } from '@reduxjs/toolkit';
+// import { createSlice } from '@reduxjs/toolkit';
+
+// const groupSlice = createSlice({
+//   name: 'group',
+//   initialState: {
+//     groupName: '',
+//     mobileNumbers: [],
+//     status: 'Active',
+//     isFormVisible: false,
+//   },
+//   reducers: {
+//     setGroupName: (state, action) => {
+//       state.groupName = action.payload;
+//     },
+//     setMobileNumber: (state, action) => {
+//       const { index, number } = action.payload;
+//       state.mobileNumbers[index].number = number;
+//     },
+//     setCountryCode: (state, action) => {
+//       const { index, countryCode } = action.payload;
+//       state.mobileNumbers[index].countryCode = countryCode;
+//     },
+//     addMobileNumber: (state) => {
+//       state.mobileNumbers.push({ countryCode: '', number: '' });
+//     },
+//     removeMobileNumber: (state, action) => {
+//       state.mobileNumbers.splice(action.payload, 1);  
+//     },
+//     setStatus: (state, action) => {
+//       state.status = action.payload;
+//     },
+//     toggleFormVisibility: (state) => {
+//       state.isFormVisible = !state.isFormVisible;
+//     },
+//     resetForm: (state) => {
+//       state.groupName = '';
+//       state.mobileNumbers = [];
+//       state.status = 'Active';
+//     },
+//   },
+// });
+
+// export const {
+//   setGroupName,
+//   setMobileNumber,
+//   setCountryCode,
+//   addMobileNumber,
+//   removeMobileNumber,
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+// } = groupSlice.actions;
+
+// export const selectGroupName = (state) => state.group.groupName;
+// export const selectMobileNumbers = (state) => state.group.mobileNumbers;
+// export const selectStatus = (state) => state.group.status;
+// export const selectIsFormVisible = (state) => state.group.isFormVisible;
+
+// export default groupSlice.reducer;
+
+
+
+
+// main code with backend api--------for group form -----------------------
+
+// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
+// import { selectToken } from '../redux/authSlice';
+
+// // Async thunk to save group details
+// export const saveGroupDetails = createAsyncThunk(
+//   'group/saveGroupDetails',
+//   async ({ groupName, mobileNumbers, status }, { getState, rejectWithValue }) => {
+//     const token = selectToken(getState());
+//     try {
+//       const response = await axios.post(
+//         'http://13.202.193.62:8085/group/saveGroupDetails',
+//         { groupName, mobileNumbers, status },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data?.message || 'Failed to save group details');
+//     }
+//   }
+// );
+
+// const groupSlice = createSlice({
+//   name: 'group',
+//   initialState: {
+//     groupName: '',
+//     mobileNumbers: [],
+//     status: 'Active',
+//     isFormVisible: false,
+//     error: null,
+//   },
+//   reducers: {
+//     setGroupName: (state, action) => {
+//       state.groupName = action.payload;
+//     },
+//     addMobileNumber: (state) => {
+//       state.mobileNumbers.push(''); // Adjust based on API requirements
+//     },
+//     removeMobileNumber: (state, action) => {
+//       state.mobileNumbers.splice(action.payload, 1);
+//     },
+//     setMobileNumber: (state, action) => {
+//       const { index, number } = action.payload;
+//       state.mobileNumbers[index] = number; // Adjust based on API requirements
+//     },
+//     setCountryCode: (state, action) => {
+//       const { index, countryCode } = action.payload;
+//       state.mobileNumbers[index] = { ...state.mobileNumbers[index], countryCode }; // Adjust based on API requirements
+//     },
+//     setStatus: (state, action) => {
+//       state.status = action.payload;
+//     },
+//     toggleFormVisibility: (state) => {
+//       state.isFormVisible = !state.isFormVisible;
+//     },
+//     resetForm: (state) => {
+//       state.groupName = '';
+//       state.mobileNumbers = [];
+//       state.status = 'Active';
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(saveGroupDetails.pending, (state) => {
+//         state.error = null;
+//       })
+//       .addCase(saveGroupDetails.fulfilled, (state) => {
+//         state.groupName = '';
+//         state.mobileNumbers = [];
+//         state.status = 'Active';
+//         state.isFormVisible = false;
+//       })
+//       .addCase(saveGroupDetails.rejected, (state, action) => {
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export const {
+//   setGroupName,
+//   addMobileNumber,
+//   removeMobileNumber,
+//   setMobileNumber,
+//   setCountryCode, // Ensure this is exported
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+// } = groupSlice.actions;
+
+// export const selectGroupName = (state) => state.group.groupName;
+// export const selectMobileNumbers = (state) => state.group.mobileNumbers;
+// export const selectStatus = (state) => state.group.status;
+// export const selectIsFormVisible = (state) => state.group.isFormVisible;
+
+// export default groupSlice.reducer;
+
+
+// main code with backend api--------for group form 
+
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { selectToken } from '../redux/authSlice';
+
+// Async thunk to save group details
+export const saveGroupDetails = createAsyncThunk(
+  'group/saveGroupDetails',
+  async ({ groupName, mobileNumbers, status }, { getState, rejectWithValue }) => {
+    const token = selectToken(getState());
+    try {
+      const response = await axios.post(
+        'http://13.202.193.62:8085/group/saveGroupDetails',
+        { groupName, mobileNumbers, status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to save group details');
+    }
+  }
+);
 
 const groupSlice = createSlice({
   name: 'group',
   initialState: {
     groupName: '',
-    mobileNumbers: [],
+    mobileNumbers: [], // Array of phone numbers (optionally with country codes)
     status: 'Active',
     isFormVisible: false,
+    loading: false, // Track loading state
+    error: null, // Error message state
   },
   reducers: {
     setGroupName: (state, action) => {
       state.groupName = action.payload;
     },
+    addMobileNumber: (state) => {
+      state.mobileNumbers.push(''); // Adds a blank mobile number entry
+    },
+    removeMobileNumber: (state, action) => {
+      state.mobileNumbers.splice(action.payload, 1); // Remove by index
+    },
     setMobileNumber: (state, action) => {
-      const { index, number } = action.payload;
-      state.mobileNumbers[index].number = number;
+      const { index, phoneNumber } = action.payload;
+      state.mobileNumbers[index] = { ...state.mobileNumbers[index], phoneNumber }; // Ensure it stores the phone number
     },
     setCountryCode: (state, action) => {
       const { index, countryCode } = action.payload;
-      state.mobileNumbers[index].countryCode = countryCode;
-    },
-    addMobileNumber: (state) => {
-      state.mobileNumbers.push({ countryCode: '', number: '' });
-    },
-    removeMobileNumber: (state, action) => {
-      state.mobileNumbers.splice(action.payload, 1);  
+      state.mobileNumbers[index] = { ...state.mobileNumbers[index], countryCode }; // Add or update country code
     },
     setStatus: (state, action) => {
       state.status = action.payload;
@@ -182,25 +376,44 @@ const groupSlice = createSlice({
       state.status = 'Active';
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(saveGroupDetails.pending, (state) => {
+        state.loading = true; // Set loading to true on form submission
+        state.error = null; // Clear previous error
+      })
+      .addCase(saveGroupDetails.fulfilled, (state) => {
+        state.groupName = '';
+        state.mobileNumbers = [];
+        state.status = 'Active';
+        state.isFormVisible = false;
+        state.loading = false; // Reset loading state
+      })
+      .addCase(saveGroupDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Set error message
+      });
+  },
 });
 
+// Export all the action creators
 export const {
   setGroupName,
-  setMobileNumber,
-  setCountryCode,
   addMobileNumber,
   removeMobileNumber,
+  setMobileNumber,
+  setCountryCode,
   setStatus,
   toggleFormVisibility,
   resetForm,
 } = groupSlice.actions;
 
+// Export selectors for accessing state in components
 export const selectGroupName = (state) => state.group.groupName;
 export const selectMobileNumbers = (state) => state.group.mobileNumbers;
 export const selectStatus = (state) => state.group.status;
 export const selectIsFormVisible = (state) => state.group.isFormVisible;
+export const selectLoading = (state) => state.group.loading;
+export const selectError = (state) => state.group.error;
 
 export default groupSlice.reducer;
-
-
-
