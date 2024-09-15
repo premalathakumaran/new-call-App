@@ -779,12 +779,14 @@
 // export default GroupForm;
 
 
+
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setGroupName,
-  setMobileNumber,
-  setCountryCode,
+  // setMobileNumber,
+  // setCountryCode,
   addMobileNumber,
   setStatus,
   toggleFormVisibility,
@@ -836,11 +838,13 @@ const GroupForm = () => {
   const handleAddMobileNumber = () => {
     if (currentMobileNumber.trim() !== '') {
       const phoneNumber = parsePhoneNumberFromString(currentMobileNumber, selectedCountryCode);
+      
       if (phoneNumber && phoneNumber.isValid()) {
-        dispatch(addMobileNumber());
         const index = mobileNumbers.length;
-        dispatch(setCountryCode({ index: index, countryCode: phoneNumber.country }));
-        dispatch(setMobileNumber({ index: index, number: phoneNumber.number }));
+        
+        // dispatch(setCountryCode({ index: index, countryCode: phoneNumber.country }));
+        dispatch(addMobileNumber({ index: index, number: phoneNumber.number }));
+        // dispatch(setMobileNumber({ index: index, number: phoneNumber.number }));
         setCurrentMobileNumber('');
         setError('');
       } else {
@@ -924,16 +928,16 @@ const GroupForm = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Country</th>
+                    {/* <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Country</th> */}
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Number</th>
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {mobileNumbers.map((mobile, index) => (
+                  {mobileNumbers.map((number, index) => (
                     <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{mobile.countryCode}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{mobile.number}</td>
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{mobile.countryCode}</td> */}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{number}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         <button
                           type="button"
@@ -980,3 +984,172 @@ const GroupForm = () => {
 };
 
 export default GroupForm;
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import {
+//   setGroupName,
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+//   selectMobileNumbers,
+//   selectGroupName,
+//   selectStatus,
+//   selectIsFormVisible,
+//   removeMobileNumber,
+//   addMobileNumber, // Make sure this action is correctly imported
+//   saveGroupDetails,
+// } from '../redux/groupSlice'; // Adjust the path if necessary
+// import { FaTrash } from 'react-icons/fa';
+
+// const GroupForm = () => {
+//   const dispatch = useDispatch();
+//   const groupName = useSelector(selectGroupName);
+//   const mobileNumbers = useSelector(selectMobileNumbers) || []; // Ensure it's an array
+//   const status = useSelector(selectStatus);
+//   const isFormVisible = useSelector(selectIsFormVisible);
+//   const [currentMobileNumber, setCurrentMobileNumber] = useState('');
+//   const [error, setError] = useState('');
+
+//   const handleGroupNameChange = (e) => dispatch(setGroupName(e.target.value));
+//   const handleMobileNumberChange = (e) => setCurrentMobileNumber(e.target.value);
+//   const handleStatusChange = (e) => dispatch(setStatus(e.target.value));
+
+//   const handleAddMobileNumber = () => {
+//     if (currentMobileNumber.trim() !== '') {
+//       // Pass the current mobile number directly to the addMobileNumber action
+//       dispatch(addMobileNumber(currentMobileNumber));
+//       setCurrentMobileNumber('');
+//       setError('');
+//     } else {
+//       setError('Invalid phone number');
+//     }
+//   };
+
+//   const handleDeleteMobileNumber = (index) => {
+//     dispatch(removeMobileNumber(index));
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     if (groupName.trim() === '') {
+//       setError('Group name is required');
+//       return;
+//     }
+
+//     dispatch(saveGroupDetails({ groupName, mobileNumbers, status }))
+//       .unwrap()
+//       .then(() => {
+//         dispatch(resetForm());
+//         dispatch(toggleFormVisibility());
+//       })
+//       .catch((error) => {
+//         setError(error || 'Failed to save group details');
+//       });
+//   };
+
+//   if (!isFormVisible) return null;
+
+//   return (
+//     <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+//       <h2 className="text-2xl font-bold mb-6">New Group</h2>
+//       <form onSubmit={handleSubmit} className="space-y-6">
+//         {error && <p className="text-red-500">{error}</p>}
+//         <div>
+//           <label className="block text-lg font-medium mb-2">Group Name:</label>
+//           <input
+//             type="text"
+//             value={groupName}
+//             onChange={handleGroupNameChange}
+//             className="border border-gray-300 rounded-lg p-3 w-full"
+//           />
+//         </div>
+//         <div>
+//           <label className="block text-lg font-medium mb-2">Mobile Numbers:</label>
+//           <div className="flex">
+//             <input
+//               type="text"
+//               value={currentMobileNumber}
+//               onChange={handleMobileNumberChange}
+//               placeholder="Enter mobile number"
+//               className="border border-gray-300 rounded-lg p-3 flex-1"
+//             />
+//             <button
+//               type="button"
+//               onClick={handleAddMobileNumber}
+//               className="text-white p-2 rounded ml-2"
+//               style={{ backgroundColor: '#134572' }}
+//             >
+//               Add
+//             </button>
+//           </div>
+//           <div className="mt-4">
+//             <h3 className="text-lg font-medium mb-2">Added Mobile Numbers:</h3>
+//             <div className="overflow-auto" style={{ maxHeight: '100px' }}>
+//               <table className="min-w-full divide-y divide-gray-200">
+//                 <thead className="bg-gray-100">
+//                   <tr>
+//                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Number</th>
+//                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-800 uppercase tracking-wider">Actions</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody className="bg-white divide-y divide-gray-200">
+//                   {mobileNumbers.map((mobile, index) => (
+//                     mobile?.number ? (
+//                       <tr key={index}>
+//                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{mobile.number}</td>
+//                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+//                           <button
+//                             type="button"
+//                             onClick={() => handleDeleteMobileNumber(index)}
+//                             className="text-red-500 hover:text-red-700"
+//                           >
+//                             <FaTrash />
+//                           </button>
+//                         </td>
+//                       </tr>
+//                     ) : null
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </div>
+//           </div>
+//         </div>
+//         <div>
+//           <label className="block text-lg font-medium mb-2">Status:</label>
+//           <select
+//             value={status}
+//             onChange={handleStatusChange}
+//             className="border border-gray-300 rounded-lg p-3 w-full"
+//           >
+//             <option value="Active">Active</option>
+//             <option value="Inactive">Inactive</option>
+//           </select>
+//         </div>
+//         <div className="flex justify-end gap-4">
+//           <button type="submit" className="text-white py-2 px-4 rounded-lg" style={{ backgroundColor: '#134572' }}>
+//             Save
+//           </button>
+//           <button
+//             type="button"
+//             onClick={() => dispatch(toggleFormVisibility())}
+//             className="text-white py-2 px-4 rounded-lg"
+//             style={{ backgroundColor: '#134572' }}
+//           >
+//             Cancel
+//           </button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default GroupForm;
