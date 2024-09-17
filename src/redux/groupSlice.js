@@ -446,6 +446,132 @@
 
 // main updated code ---------------------------
 
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
+// import { selectToken } from "../redux/authSlice";
+
+// // Async thunk to save group details
+// export const saveGroupDetails = createAsyncThunk(
+//   "group/saveGroupDetails",
+//   async (
+//     { groupName, mobileNumbers, status },
+//     { getState, rejectWithValue }
+//   ) => {
+//     const token = selectToken(getState());
+
+//     try {
+//       const response = await axios.post(
+//         "http://13.202.193.62:8085/group/saveGroupDetails",
+//         { groupName, mobileNumber: mobileNumbers, status, isActive: "true" },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to save group details"
+//       );
+//     }
+//   }
+// );
+
+// const groupSlice = createSlice({
+//   name: "group",
+//   initialState: {
+//     groupName: "",
+//     groupId: "",
+//     mobileNumbers: [],
+//     status: "null",
+//     isFormVisible: false,
+//     loading: false, // Track loading state
+//     error: null, // Error message state
+//   },
+//   reducers: {
+//     setGroupName: (state, action) => {
+//       state.groupName = action.payload;
+//     },
+//     addMobileNumber: (state, action) => {
+//       const { number: phoneNumber } = action.payload;
+//       state.mobileNumbers.push(phoneNumber); // Fix: Now correctly adds an object with phoneNumber
+//     },
+//     removeMobileNumber: (state, action) => {
+//       state.mobileNumbers.splice(action.payload, 1);
+//        // Remove by index
+//     },
+//     setMobileNumber: (state, action) => {
+//       const { index, number: phoneNumber } = action.payload;
+//       state.mobileNumbers[index] = {
+//         ...state.mobileNumbers[index],
+//         phoneNumber,
+//       };
+//     },
+//     setCountryCode: (state, action) => {
+//       const { index, countryCode } = action.payload;
+//       state.mobileNumbers[index] = {
+//         ...state.mobileNumbers[index],
+//         countryCode,
+//       };
+//     },
+//     setStatus: (state, action) => {
+//       state.status = action.payload;
+//     },
+//     toggleFormVisibility: (state) => {
+//       state.isFormVisible = !state.isFormVisible;
+//     },
+//     resetForm: (state) => {
+//       state.groupName = "";
+//       state.mobileNumbers = [];
+//       state.status = "Active";
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(saveGroupDetails.pending, (state) => {
+//         state.loading = true;
+//         state.error = null;
+//       })
+//       .addCase(saveGroupDetails.fulfilled, (state) => {
+//         state.groupName = "";
+//         state.mobileNumbers = [];
+//         state.status = "Active";
+//         state.isFormVisible = false;
+//         state.loading = false;
+//       })
+//       .addCase(saveGroupDetails.rejected, (state, action) => {
+//         state.loading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// // Export all the action creators
+// export const {
+//   setGroupName,
+//   addMobileNumber,
+//   removeMobileNumber,
+//   setMobileNumber,
+//   setCountryCode,
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+// } = groupSlice.actions;
+
+// // Export selectors for accessing state in components
+// export const selectGroupName = (state) => state.group.groupName;
+// export const selectMobileNumbers = (state) => state.group.mobileNumbers;
+// export const selectStatus = (state) => state.group.status;
+// export const selectIsFormVisible = (state) => state.group.isFormVisible;
+// export const selectLoading = (state) => state.group.loading;
+// export const selectError = (state) => state.group.error;
+
+// export default groupSlice.reducer;
+
+
+
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { selectToken } from "../redux/authSlice";
@@ -453,16 +579,18 @@ import { selectToken } from "../redux/authSlice";
 // Async thunk to save group details
 export const saveGroupDetails = createAsyncThunk(
   "group/saveGroupDetails",
-  async (
-    { groupName, mobileNumbers, status },
-    { getState, rejectWithValue }
-  ) => {
+  async ({ groupName, mobileNumbers, status }, { getState, rejectWithValue }) => {
     const token = selectToken(getState());
 
     try {
       const response = await axios.post(
         "http://13.202.193.62:8085/group/saveGroupDetails",
-        { groupName, mobileNumber: mobileNumbers, status, isActive: "true" },
+        {
+          groupName,
+          isActive: status === "Active",  // Convert status to isActive
+          createdBy: 1,  // This should match the authenticated user or desired ID
+          mobileNumber: mobileNumbers.map((number) => ({ mobileNumber: number })),
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -483,37 +611,21 @@ const groupSlice = createSlice({
   initialState: {
     groupName: "",
     groupId: "",
-    mobileNumbers: [],
-    status: "null",
+    mobileNumbers: [],  // This stores only the mobile numbers
+    status: "Active",
     isFormVisible: false,
-    loading: false, // Track loading state
-    error: null, // Error message state
+    loading: false,  // Track loading state
+    error: null,  // Error message state
   },
   reducers: {
     setGroupName: (state, action) => {
       state.groupName = action.payload;
     },
     addMobileNumber: (state, action) => {
-      const { number: phoneNumber } = action.payload;
-      state.mobileNumbers.push(phoneNumber); // Fix: Now correctly adds an object with phoneNumber
+      state.mobileNumbers.push(action.payload.number);  // Add only the number
     },
     removeMobileNumber: (state, action) => {
-      state.mobileNumbers.splice(action.payload, 1);
-       // Remove by index
-    },
-    setMobileNumber: (state, action) => {
-      const { index, number: phoneNumber } = action.payload;
-      state.mobileNumbers[index] = {
-        ...state.mobileNumbers[index],
-        phoneNumber,
-      };
-    },
-    setCountryCode: (state, action) => {
-      const { index, countryCode } = action.payload;
-      state.mobileNumbers[index] = {
-        ...state.mobileNumbers[index],
-        countryCode,
-      };
+      state.mobileNumbers.splice(action.payload, 1);  // Remove by index
     },
     setStatus: (state, action) => {
       state.status = action.payload;
@@ -547,24 +659,18 @@ const groupSlice = createSlice({
   },
 });
 
-// Export all the action creators
 export const {
   setGroupName,
   addMobileNumber,
   removeMobileNumber,
-  setMobileNumber,
-  setCountryCode,
   setStatus,
   toggleFormVisibility,
   resetForm,
 } = groupSlice.actions;
 
-// Export selectors for accessing state in components
 export const selectGroupName = (state) => state.group.groupName;
 export const selectMobileNumbers = (state) => state.group.mobileNumbers;
 export const selectStatus = (state) => state.group.status;
 export const selectIsFormVisible = (state) => state.group.isFormVisible;
-export const selectLoading = (state) => state.group.loading;
-export const selectError = (state) => state.group.error;
 
 export default groupSlice.reducer;
