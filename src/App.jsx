@@ -32,21 +32,40 @@
 // main code if it is any error use this code -----// tis code without page routing ---------------------------------------------------------------------------------------
 
 // // src/App.jsx
+// import React from 'react';
+// // import { Provider } from 'react-redux';----
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// // import store from './store'; ---
+// import LoginPage from './pages/LoginPage';
+// import Admin from './pages/Admin';
+
+// const App = () => (
+ 
+//     <Router>
+//       <Routes>
+//         <Route path="/" element={<LoginPage />} />
+//         <Route path="/admin" element={<Admin />} />
+//       </Routes>
+//     </Router>
+
+// );
+// export default App;
+
+
 import React from 'react';
-// import { Provider } from 'react-redux';----
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import store from './store'; ---
 import LoginPage from './pages/LoginPage';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound'; // Create a NotFound component for handling 404 errors
 
 const App = () => (
- 
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/admin" element={<Admin />} />
-      </Routes>
-    </Router>
-
+  <Router>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="*" element={<NotFound />} /> {/* Fallback route */}
+    </Routes>
+  </Router>
 );
+
 export default App;

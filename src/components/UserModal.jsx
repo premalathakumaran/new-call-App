@@ -2034,7 +2034,7 @@ const UserModal = ({
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-      <div className="relative bg-white p-16 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
+      <div className="relative bg-white p-10 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 text-2xl">
           &times;
         </button>
@@ -2086,6 +2086,7 @@ const UserModal = ({
                     type="button"
                     onClick={handleAddPhone}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                    style={{ backgroundColor: '#134572' }}
                   >
                     Add
                   </button>
@@ -2220,12 +2221,14 @@ const UserModal = ({
                   type="button"
                   onClick={onCancel}
                   className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
+                  style={{ backgroundColor: '#134572' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                  style={{ backgroundColor: '#134572' }}
                 >
                   Save
                 </button>
