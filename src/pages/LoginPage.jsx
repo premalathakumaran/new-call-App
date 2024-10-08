@@ -434,12 +434,12 @@ const LoginPage = () => {
           </button>
           {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
         </form>
-        {user && (
+        {/* {user && (
           <div className="mt-4 text-center">
             <p>Welcome, {user.username}</p>
             <p>Your user type: {user.userType}</p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
