@@ -697,7 +697,7 @@ export const saveGroupDetails = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        "http://13.202.193.62:8085/group/saveGroupDetails",
+        "http://13.127.211.81:8085/group/saveGroupDetails",
         {
           groupName,
           isActive: status === "Active",  // Convert status to isActive

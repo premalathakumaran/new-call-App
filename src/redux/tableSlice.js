@@ -1,918 +1,4 @@
 
-
-
-//-----------------------------------------------------------
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from 'axios';
-
-// // Async thunk to fetch data
-// export const fetchTableData = createAsyncThunk(
-//   'table/fetchTableData',
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         'http://13.202.193.62:8085/group/getGroupDetails',
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`, // Authorization token from state
-//           },
-//         }
-//       );
-//       return response.data.data; // Ensure that the payload is correctly handled
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data || 'Failed to fetch table data'
-//       ); // Consistent error handling
-//     }
-//   }
-// );
-
-// // Async thunk to add a new table item
-// export const addTableItem = createAsyncThunk(
-//   'table/addTableItem',
-//   async (newItem, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(
-//         'http://13.202.193.62:8085/group/addGroup',
-//         newItem,
-//         {
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         }
-//       );
-//       return response.data; // Return the added item
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data || 'Failed to add table item'
-//       ); // Consistent error handling
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: 'table',
-//   initialState: {
-//     data: [], // Array to store fetched table data
-//     status: 'idle', // Loading status: 'idle', 'loading', 'succeeded', 'failed'
-//     error: null, // Error message state
-//     selectedPerson: null, // Person selected in the table
-//   },
-//   reducers: {
-//     selectPerson: (state, action) => {
-//       state.selectedPerson = action.payload; // Store selected person by ID
-//     },
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null; // Clear selected person
-//     },
-//     updateTableItem: (state, action) => {
-//       const { id, item } = action.payload;
-//       const index = state.data.findIndex((i) => i.id === id);
-//       if (index !== -1) {
-//         state.data[index] = { ...state.data[index], ...item }; // Update table item data
-//       }
-//     },
-//     deleteTableItem: (state, action) => {
-//       state.data = state.data.filter((item) => item.id !== action.payload); // Remove table item by ID
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones = person.phones.map((phone) =>
-//           phone === oldPhone ? newPhone : phone
-//         ); // Update phone number
-//       }
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones.push(phone); // Add new phone number
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones = person.phones.filter((p) => p !== phone); // Remove phone number
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = 'loading'; // Loading state
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = 'succeeded'; // Data successfully fetched
-//         state.data = action.payload; // Store fetched data in state
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = 'failed'; // Fetch failed
-//         state.error = action.payload; // Store error message
-//       })
-//       .addCase(addTableItem.fulfilled, (state, action) => {
-//         state.data.push(action.payload); // Add new item to the data array
-//       })
-//       .addCase(addTableItem.rejected, (state, action) => {
-//         state.error = action.payload; // Handle errors if adding fails
-//       });
-//   },
-// });
-
-// export const {
-//   selectPerson,
-//   clearSelectedPerson,
-//   updateTableItem,
-//   deleteTableItem,
-//   updatePhoneNumber,
-//   addPhoneNumber,
-//   deletePhoneNumber,
-// } = tableSlice.actions;
-
-// export default tableSlice.reducer;
-
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from 'axios';
-
-// // Async thunk to fetch data
-// export const fetchTableData = createAsyncThunk(
-//   'table/fetchTableData',
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         'http://13.202.193.62:8085/group/getGroupDetails',
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`, // Authorization token from state
-//           },
-//         }
-//       );
-//       return response.data.data; // Ensure that the payload is correctly handled
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data || 'Failed to fetch table data'
-//       ); // Consistent error handling
-//     }
-//   }
-// );
-
-// // Async thunk to add a new table item
-// export const addTableItem = createAsyncThunk(
-//   'table/addTableItem',
-//   async (newItem, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(
-//         'http://13.202.193.62:8085/group/saveGroupDetails', // Updated API endpoint
-//         newItem,
-//         {
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         }
-//       );
-//       return response.data; // Return the added item or relevant response
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data || 'Failed to add table item'
-//       ); // Consistent error handling
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: 'table',
-//   initialState: {
-//     data: [], // Array to store fetched table data
-//     status: 'idle', // Loading status: 'idle', 'loading', 'succeeded', 'failed'
-//     error: null, // Error message state
-//     selectedPerson: null, // Person selected in the table
-//   },
-//   reducers: {
-//     selectPerson: (state, action) => {
-//       state.selectedPerson = action.payload; // Store selected person by ID
-//     },
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null; // Clear selected person
-//     },
-//     updateTableItem: (state, action) => {
-//       const { id, item } = action.payload;
-//       const index = state.data.findIndex((i) => i.id === id);
-//       if (index !== -1) {
-//         state.data[index] = { ...state.data[index], ...item }; // Update table item data
-//       }
-//     },
-//     deleteTableItem: (state, action) => {
-//       state.data = state.data.filter((item) => item.id !== action.payload); // Remove table item by ID
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones = person.phones.map((phone) =>
-//           phone === oldPhone ? newPhone : phone
-//         ); // Update phone number
-//       }
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones.push(phone); // Add new phone number
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((p) => p.id === id);
-//       if (person) {
-//         person.phones = person.phones.filter((p) => p !== phone); // Remove phone number
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = 'loading'; // Loading state
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = 'succeeded'; // Data successfully fetched
-//         state.data = action.payload; // Store fetched data in state
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = 'failed'; // Fetch failed
-//         state.error = action.payload; // Store error message
-//       })
-//       .addCase(addTableItem.fulfilled, (state, action) => {
-//         state.data.push(action.payload); // Add new item to the data array
-//       })
-//       .addCase(addTableItem.rejected, (state, action) => {
-//         state.error = action.payload; // Handle errors if adding fails
-//       });
-//   },
-// });
-
-// export const {
-//   selectPerson,
-//   clearSelectedPerson,
-//   updateTableItem,
-//   deleteTableItem,
-//   updatePhoneNumber,
-//   addPhoneNumber,
-//   deletePhoneNumber,
-// } = tableSlice.actions;
-
-// export default tableSlice.reducer;
-
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from 'axios';
-
-// // Fetch table data
-// export const fetchTableData = createAsyncThunk(
-//   'table/fetchTableData',
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         'http://13.202.193.62:8085/group/getGroupDetails',
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || 'Failed to fetch table data'
-//       );
-//     }
-//   }
-// );
-
-// // Fetch group details using the token
-// export const fetchGroupDetails = createAsyncThunk(
-//   'table/fetchGroupDetails',
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem('jwt');
-//       const response = await axios.get(`http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
-//       });
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || 'Failed to fetch group details');
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: 'table',
-//   initialState: {
-//     data: [],
-//     selectedPerson: null,
-//     status: 'idle',
-//     error: null,
-//   },
-//   reducers: {
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null;
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         if (!person.phones) person.phones = [];  // Ensure phones is defined
-//         person.phones.push(phone);
-//       }
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         const phoneIndex = person.phones?.indexOf(oldPhone); // Optional chaining
-//         if (phoneIndex > -1) {
-//           person.phones[phoneIndex] = newPhone;
-//         }
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         if (person.phones) {  // Ensure phones is defined
-//           person.phones = person.phones.filter(p => p !== phone);
-//         }
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = 'succeeded';
-//         state.data = action.payload;
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.payload;
-//       })
-//       .addCase(fetchGroupDetails.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
-//         state.selectedPerson = action.payload;
-//         state.status = 'succeeded';
-//       })
-//       .addCase(fetchGroupDetails.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const { clearSelectedPerson, addPhoneNumber, updatePhoneNumber, deletePhoneNumber } = tableSlice.actions;
-// export default tableSlice.reducer;
-
-// domi does not work use this main code one ------------------------------------------------------------
-
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from 'axios';
-
-// // Fetch table data
-// export const fetchTableData = createAsyncThunk(
-//   'table/fetchTableData',
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         'http://13.202.193.62:8085/group/getGroupDetails',
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || 'Failed to fetch table data'
-//       );
-//     }
-//   }
-// );
-
-// // Fetch group details using the token
-// export const fetchGroupDetails = createAsyncThunk(
-//   'table/fetchGroupDetails',
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem('jwt');
-//       const response = await axios.get(`http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
-//       });
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || 'Failed to fetch group details');
-//     }
-//   }
-// );
-
-// // Delete a group
-// export const deleteGroup = createAsyncThunk(
-//   'table/deleteGroup',
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem('jwt'); // Retrieve token from localStorage
-//       if (!token) throw new Error('No token found');
-
-//       await axios.delete(`http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-
-//       return groupId; // Return the ID of the deleted group to remove from state
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || 'Failed to delete group'
-//       );
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: 'table',
-//   initialState: {
-//     data: [],
-//     selectedPerson: null,
-//     status: 'idle',
-//     error: null,
-//   },
-//   reducers: {
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null;
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         if (!person.phones) person.phones = [];  // Ensure phones is defined
-//         person.phones.push(phone);
-//       }
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         const phoneIndex = person.phones?.indexOf(oldPhone); // Optional chaining
-//         if (phoneIndex > -1) {
-//           person.phones[phoneIndex] = newPhone;
-//         }
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find(person => person.id === id);
-//       if (person) {
-//         if (person.phones) {  // Ensure phones is defined
-//           person.phones = person.phones.filter(p => p !== phone);
-//         }
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = 'succeeded';
-//         state.data = action.payload;
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.payload;
-//       })
-//       .addCase(fetchGroupDetails.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
-//         state.selectedPerson = action.payload;
-//         state.status = 'succeeded';
-//       })
-//       .addCase(fetchGroupDetails.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.payload;
-//       })
-//       .addCase(deleteGroup.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(deleteGroup.fulfilled, (state, action) => {
-//         state.status = 'succeeded';
-//         // Remove the deleted group from the state
-//         state.data = state.data.filter((item) => item.id !== action.payload);
-//       })
-//       .addCase(deleteGroup.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const { clearSelectedPerson, addPhoneNumber, updatePhoneNumber, deletePhoneNumber } = tableSlice.actions;
-// export default tableSlice.reducer;
-
-//main file-----------------------------
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-
-// // const API_BASE_URL = 'http://13.202.193.62:8085/group';
-
-// // Fetch table data
-// export const fetchTableData = createAsyncThunk(
-//   "table/fetchTableData",
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         "http://13.202.193.62:8085/group/getGroupDetails",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to fetch table data"
-//       );
-//     }
-//   }
-// );
-
-// // Fetch group details using the token
-// export const fetchGroupDetails = createAsyncThunk(
-//   "table/fetchGroupDetails",
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem("jwt");
-
-//       const response = await axios.get(
-//         `http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`,
-//         {
-//           // params: { groupId },
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to fetch group details"
-//       );
-//     }
-//   }
-// );
-
-// // Delete a group
-// export const deleteGroup = createAsyncThunk(
-//   "table/deleteGroup",
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem("jwt"); // Retrieve token from localStorage
-//       if (!token) throw new Error("No token found");
-
-//       await axios.delete(
-//         `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
-//         {
-//           params: {
-//             flag: 0,
-//             // groupId,
-//           },
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       return groupId; // Return the ID of the deleted group to remove from state
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to delete group"
-//       );
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: "table",
-//   initialState: {
-//     data: [],
-//     selectedPerson: null,
-//     status: "idle",
-//     error: null,
-//   },
-//   reducers: {
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null;
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         if (!person.phones) person.phones = []; // Ensure phones is defined
-//         person.phones.push(phone);
-//       }
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         const phoneIndex = person.phones?.indexOf(oldPhone); // Optional chaining
-//         if (phoneIndex > -1) {
-//           person.phones[phoneIndex] = newPhone;
-//         }
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         if (person.phones) {
-//           // Ensure phones is defined
-//           person.phones = person.phones.filter((p) => p !== phone);
-//         }
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = "succeeded";
-//         state.data = action.payload;
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       })
-//       .addCase(fetchGroupDetails.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
-//         state.selectedPerson = action.payload;
-//         state.status = "succeeded";
-//       })
-//       .addCase(fetchGroupDetails.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       })
-//       .addCase(deleteGroup.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(deleteGroup.fulfilled, (state, action) => {
-//         state.status = "succeeded";
-//         // Remove the deleted group from the state
-//         state.data = state.data.filter((item) => item.id !== action.payload);
-//       })
-//       .addCase(deleteGroup.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const {
-//   clearSelectedPerson,
-//   addPhoneNumber,
-//   updatePhoneNumber,
-//   deletePhoneNumber,
-// } = tableSlice.actions;
-// export default tableSlice.reducer;
-
-
-
-
-//domi file ------------------main code ------------------------................
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-
-// // Fetch table data
-// export const fetchTableData = createAsyncThunk(
-//   "table/fetchTableData",
-//   async (token, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         "http://13.202.193.62:8085/group/getGroupDetails",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to fetch table data"
-//       );
-//     }
-//   }
-// );
-
-// // Fetch group details using the token
-// export const fetchGroupDetails = createAsyncThunk(
-//   "table/fetchGroupDetails",
-//   async (groupId, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem("jwt");
-//       const response = await axios.get(
-//         `http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to fetch group details"
-//       );
-//     }
-//   }
-// );
-
-// // Update (edit) group details
-// export const updateGroupDetails = createAsyncThunk(
-//   "table/updateGroupDetails",
-//   async ({ formData, token }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(
-//         `http://13.202.193.62:8085/group/updateGroupDetailsById`,
-
-//         formData,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to update group details"
-//       );
-//     }
-//   }
-// );
-
-// // Delete a group
-// export const deleteGroup = createAsyncThunk(
-//   "table/deleteGroup",
-//   async ({ groupId }, { rejectWithValue }) => {
-//     try {
-//       const token = localStorage.getItem("jwt");
-//       if (!token) throw new Error("No token found");
-
-//       await axios.post(
-//         `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
-//         {},
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       return groupId; // Return the ID of the deleted group to remove from state
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to delete group"
-//       );
-//     }
-//   }
-// );
-
-// const tableSlice = createSlice({
-//   name: "table",
-//   initialState: {
-//     data: [],
-//     selectedPerson: null,
-//     status: "idle",
-//     error: null,
-//   },
-//   reducers: {
-//     clearSelectedPerson: (state) => {
-//       state.selectedPerson = null;
-//     },
-//     addPhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         if (!person.phones) person.phones = []; // Ensure phones is defined
-//         person.phones.push(phone);
-//       }
-//     },
-//     updatePhoneNumber: (state, action) => {
-//       const { id, oldPhone, newPhone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         const phoneIndex = person.phones?.indexOf(oldPhone); // Optional chaining
-//         if (phoneIndex > -1) {
-//           person.phones[phoneIndex] = newPhone;
-//         }
-//       }
-//     },
-//     deletePhoneNumber: (state, action) => {
-//       const { id, phone } = action.payload;
-//       const person = state.data.find((person) => person.id === id);
-//       if (person) {
-//         if (person.phones) {
-//           person.phones = person.phones.filter((p) => p !== phone);
-//         }
-//       }
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       // Fetch table data
-//       .addCase(fetchTableData.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(fetchTableData.fulfilled, (state, action) => {
-//         state.status = "succeeded";
-//         state.data = action.payload;
-//       })
-//       .addCase(fetchTableData.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       })
-
-//       // Fetch group details
-//       .addCase(fetchGroupDetails.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
-//         state.selectedPerson = action.payload;
-//         state.status = "succeeded";
-//       })
-//       .addCase(fetchGroupDetails.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       })
-
-//       // Update group details
-//       .addCase(updateGroupDetails.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(updateGroupDetails.fulfilled, (state, action) => {
-//         state.status = "succeeded";
-//         const updatedGroup = action.payload;
-//         // Update the corresponding group in the state
-//         state.data = state.data.map((group) =>
-//           group.id === updatedGroup.id ? updatedGroup : group
-//         );
-//       })
-//       .addCase(updateGroupDetails.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       })
-
-//       // Delete group
-//       .addCase(deleteGroup.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(deleteGroup.fulfilled, (state, action) => {
-//         state.status = "succeeded";
-//         state.data = state.data.filter((item) => item.id !== action.payload);
-//       })
-//       .addCase(deleteGroup.rejected, (state, action) => {
-//         state.status = "failed";
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const {
-//   clearSelectedPerson,
-//   addPhoneNumber,
-//   updatePhoneNumber,
-//   deletePhoneNumber,
-// } = tableSlice.actions;
-// export default tableSlice.reducer;
-
-
-
-
-
 // this used delete API also ------do not distub code ---------------------------------------
 
 
@@ -1495,89 +581,16 @@
 
 // checking code for fetch the data --------------resolve all error code  final code -----------------------------------
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
 
-// Fetch table data
-export const fetchTableData = createAsyncThunk(
-  "table/fetchTableData",
-  async (token, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        "http://13.202.193.62:8085/group/getGroupDetails",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch table data"
-      );
-    }
-  }
-);
-
-// Fetch group details using the token
-export const fetchGroupDetails = createAsyncThunk(
-  "table/fetchGroupDetails",
-  async (groupId, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("jwt");
-      const response = await axios.get(
-        `http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch group details"
-      );
-    }
-  }
-);
-
-// // Update (edit) group details
-export const updateGroupDetails = createAsyncThunk(
-  'group/updateGroupDetails',
-  async ({ formData }, { rejectWithValue }) => {
-
-    try {
-      const token = localStorage.getItem('jwt');
-      if (!token) throw new Error('No token found');
-
-      const response = await axios.post(
-        'http://13.202.193.62:8085/group/updateGroupDetailsById',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Failed to update group details'
-      );
-    }
-    // export { updateGroupDetails };
-  }
-);
-// export const updateGroupDetails = createAsyncThunk(
-//   'group/updateGroupDetails',
-//   async ({ formData, token }, { rejectWithValue }) => {
+// // Fetch table data
+// export const fetchTableData = createAsyncThunk(
+//   "table/fetchTableData",
+//   async (token, { rejectWithValue }) => {
 //     try {
-//       const response = await axios.post(
-//         'http://13.202.193.62:8085/group/updateGroupDetailsById',
-//         formData,
+//       const response = await axios.get(
+//         "http://13.202.193.62:8085/group/getGroupDetails",
 //         {
 //           headers: {
 //             Authorization: `Bearer ${token}`,
@@ -1587,25 +600,445 @@ export const updateGroupDetails = createAsyncThunk(
 //       return response.data.data;
 //     } catch (error) {
 //       return rejectWithValue(
-//         error.response?.data?.message || 'Failed to update group details'
+//         error.response?.data?.message || "Failed to fetch table data"
 //       );
 //     }
 //   }
 // );
 
+// // Fetch group details using the token
+// export const fetchGroupDetails = createAsyncThunk(
+//   "table/fetchGroupDetails",
+//   async (groupId, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("jwt");
+//       const response = await axios.get(
+//         `http://13.202.193.62:8085/group/getGroupDetailsById?groupId=${groupId}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to fetch group details"
+//       );
+//     }
+//   }
+// );
+
+// // // Update (edit) group details
+// export const updateGroupDetails = createAsyncThunk(
+//   'group/updateGroupDetails',
+//   async ({ formData }, { rejectWithValue }) => {
+
+//     try {
+//       const token = localStorage.getItem('jwt');
+//       if (!token) throw new Error('No token found');
+
+//       const response = await axios.post(
+//         'http://13.202.193.62:8085/group/updateGroupDetailsById',
+//         formData,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       return response.data.data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || 'Failed to update group details'
+//       );
+//     }
+//     // export { updateGroupDetails };
+//   }
+// );
+// // export const updateGroupDetails = createAsyncThunk(
+// //   'group/updateGroupDetails',
+// //   async ({ formData, token }, { rejectWithValue }) => {
+// //     try {
+// //       const response = await axios.post(
+// //         'http://13.202.193.62:8085/group/updateGroupDetailsById',
+// //         formData,
+// //         {
+// //           headers: {
+// //             Authorization: `Bearer ${token}`,
+// //           },
+// //         }
+// //       );
+// //       return response.data.data;
+// //     } catch (error) {
+// //       return rejectWithValue(
+// //         error.response?.data?.message || 'Failed to update group details'
+// //       );
+// //     }
+// //   }
+// // );
 
 
+
+
+// // Delete a group
+// export const deleteGroup = createAsyncThunk(
+//   "table/deleteGroup",
+//   async ({ groupId }, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("jwt");
+//       if (!token) throw new Error("No token found");
+
+//       await axios.post(
+//         `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       return groupId; // Return the ID of the deleted group to remove from state
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to delete group"
+//       );
+//     }
+//   }
+// );
+
+// // Delete a phone number
+// export const deletePhone = createAsyncThunk(
+//   "table/deletePhone",
+//   async ({ phoneId, groupId }, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("jwt");
+//       if (!token) throw new Error("No token found");
+
+//       const url = `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`;
+//       await axios.post(url, {}, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       return { phoneId, groupId }; // Return phoneId and groupId to identify which phone was deleted
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to delete phone number"
+//       );
+//     }
+//   }
+// );
+
+// const tableSlice = createSlice({
+//   name: "table",
+//   initialState: {
+//     data: [],
+//     selectedPerson: null,
+//     status: "idle",
+//     error: null,
+//     groupDetails: null, // Added for editing purposes
+//   },
+//   reducers: {
+//     clearSelectedPerson: (state) => {
+//       state.selectedPerson = null;
+//     },
+//     addPhoneNumber: (state, action) => {
+//       const { id, phone } = action.payload;
+//       const person = state.data.find((person) => person.id === id);
+//       if (person) {
+//         if (!person.phones) person.phones = []; // Ensure phones is defined
+//         person.phones.push(phone);
+//       }
+//     },
+//     updatePhoneNumber: (state, action) => {
+//       const { id, oldPhone, newPhone } = action.payload;
+//       const person = state.data.find((person) => person.id === id);
+//       if (person) {
+//         const phoneIndex = person.phones?.findIndex((phone) => phone.id === oldPhone.id); // Find index of the phone to update
+//         if (phoneIndex > -1) {
+//           person.phones[phoneIndex] = newPhone;
+//         }
+//       }
+//     },
+//     deletePhoneNumber: (state, action) => {
+//       const { phoneId, groupId } = action.payload;
+//       const person = state.data.find((person) => person.id === groupId);
+//       if (person) {
+//         if (person.phones) {
+//           person.phones = person.phones.filter((phone) => phone.id !== phoneId);
+//         }
+//       }
+//     },
+//     setGroupDetailsForEdit: (state, action) => {
+//       state.groupDetails = action.payload; // Set group details for editing
+//     },
+//     resetEditState: (state) => {
+//       state.groupDetails = null; // Clear group details after editing
+//       state.status = "idle"; // Reset status
+//       state.error = null; // Clear errors
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       // Fetch table data
+//       .addCase(fetchTableData.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(fetchTableData.fulfilled, (state, action) => {
+//         state.status = "succeeded";
+//         state.data = action.payload;
+//       })
+//       .addCase(fetchTableData.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Fetch group details
+//       .addCase(fetchGroupDetails.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
+//         state.selectedPerson = action.payload;
+//         state.status = "succeeded";
+//       })
+//       .addCase(fetchGroupDetails.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Update group details (edit functionality)
+//       .addCase(updateGroupDetails.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       // .addCase(updateGroupDetails.fulfilled, (state, action) => {
+//       //   state.status = "succeeded";
+//       //   const updatedGroup = action.payload;
+//       //   // Update the corresponding group in the state
+//       //   state.data = state.data.map((group) =>
+//       //     group.id === updatedGroup.id ? updatedGroup : group
+//       //   );
+//       //   state.groupDetails = null; // Clear group details after a successful update
+//       // })
+//       .addCase(updateGroupDetails.fulfilled, (state, action) => {
+//         state.status = 'succeeded';
+//         const updatedGroup = action.payload;
+//         state.data = state.data.map((group) =>
+//           group.id === updatedGroup.groupId ? { ...group, ...updatedGroup } : group
+//         );
+//       })
+      
+//       .addCase(updateGroupDetails.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Delete group
+//       .addCase(deleteGroup.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(deleteGroup.fulfilled, (state, action) => {
+//         state.status = "succeeded";
+//         state.data = state.data.filter((item) => item.id !== action.payload);
+//       })
+//       .addCase(deleteGroup.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Delete phone number
+//       .addCase(deletePhone.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(deletePhone.fulfilled, (state, action) => {
+//         state.status = "succeeded";
+//         const { phoneId, groupId } = action.payload;
+//         // console.log("phoneid", phoneId)
+//         // console.log("phoneid", groupId)
+//         // Update the corresponding person's phones in the state
+//         state.data = state.data.map((group) => {
+//           if (group.id === groupId) {
+//             return {
+//               ...group,
+//               phones: group.phones?.filter((phone) => phone.id !== phoneId) || [],
+//             };
+//           }
+//           return group;
+//         });
+//       })
+//       .addCase(deletePhone.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export const {
+//   clearSelectedPerson,
+//   addPhoneNumber,
+//   updatePhoneNumber,
+//   deletePhoneNumber,
+//   setGroupDetailsForEdit,
+//   resetEditState,
+  
+// } = tableSlice.actions;
+
+// export default tableSlice.reducer;
+
+
+
+
+
+
+
+// refresh token ------------------------------
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { refreshToken } from "../redux/authSlice"; // Import the refreshToken function
+
+// Fetch table data
+export const fetchTableData = createAsyncThunk(
+  'table/fetchTableData',
+  async (_, { rejectWithValue, dispatch }) => {
+    let token = localStorage.getItem('jwt');
+
+    if (!token) {
+      return rejectWithValue('No token found');
+    }
+
+    try {
+      const response = await axios.get(
+        'http://13.127.211.81:8085/group/getGroupDetails',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.data; // Adjust according to your API's response structure
+    } catch (error) {
+      // Handle token expiration (401 error)
+      if (error.response && error.response.status === 401) {
+        const newToken = await dispatch(refreshToken()); // Refresh the token
+        if (newToken.payload) { // Check if the new token was successfully fetched
+          // Retry the original request with the new token
+          const retryResponse = await axios.get(
+            'http://13.127.211.81:8085/group/getGroupDetails',
+            {
+              headers: {
+                Authorization: `Bearer ${newToken.payload}`,
+              },
+            }
+          );
+          return retryResponse.data.data; // Return the new data
+        } else {
+          return rejectWithValue('Session expired. Please log in again.');
+        }
+      }
+      // Log other errors
+      console.error('Fetch table data error:', error);
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to fetch table data'
+      );
+    }
+  }
+);
+
+
+
+
+
+// Fetch group details using the token
+export const fetchGroupDetails = createAsyncThunk(
+  "table/fetchGroupDetails",
+  async (groupId, { rejectWithValue, dispatch }) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
+
+    try {
+      const response = await axios.get(
+        `http://13.127.211.81:8085/group/getGroupDetailsById?groupId=${groupId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Handle token expiration (401 error)
+      if (error.response && error.response.status === 401) {
+        const newToken = await dispatch(refreshToken()); // Refresh the token
+        if (newToken.payload) { // Check if the new token was successfully fetched
+          // Retry the original request with the new token
+          const retryResponse = await axios.get(
+            `http://13.127.211.81:8085/group/getGroupDetailsById?groupId=${groupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newToken.payload}`,
+              },
+            }
+          );
+          return retryResponse.data; // Return the new data
+        } else {
+          return rejectWithValue('Session expired. Please log in again.');
+        }
+      }
+      console.error(error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch group details"
+      );
+    }
+  }
+);
+
+// Update (edit) group details
+export const updateGroupDetails = createAsyncThunk(
+  'group/updateGroupDetails',
+  async ({ formData }, { rejectWithValue }) => {
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
+
+    try {
+      const response = await axios.post(
+        'http://13.127.211.81:8085/group/updateGroupDetailsById',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update group details'
+      );
+    }
+  }
+);
 
 // Delete a group
 export const deleteGroup = createAsyncThunk(
   "table/deleteGroup",
   async ({ groupId }, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("jwt");
-      if (!token) throw new Error("No token found");
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
 
+    try {
       await axios.post(
-        `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
+        `http://13.127.211.81:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
         {},
         {
           headers: {
@@ -1616,6 +1049,7 @@ export const deleteGroup = createAsyncThunk(
 
       return groupId; // Return the ID of the deleted group to remove from state
     } catch (error) {
+      console.error(error);
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete group"
       );
@@ -1627,11 +1061,13 @@ export const deleteGroup = createAsyncThunk(
 export const deletePhone = createAsyncThunk(
   "table/deletePhone",
   async ({ phoneId, groupId }, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("jwt");
-      if (!token) throw new Error("No token found");
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
 
-      const url = `http://13.202.193.62:8085/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`;
+    try {
+      const url = `http://13.127.211.81:8085/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`;
       await axios.post(url, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1640,6 +1076,7 @@ export const deletePhone = createAsyncThunk(
 
       return { phoneId, groupId }; // Return phoneId and groupId to identify which phone was deleted
     } catch (error) {
+      console.error(error);
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete phone number"
       );
@@ -1672,7 +1109,7 @@ const tableSlice = createSlice({
       const { id, oldPhone, newPhone } = action.payload;
       const person = state.data.find((person) => person.id === id);
       if (person) {
-        const phoneIndex = person.phones?.findIndex((phone) => phone.id === oldPhone.id); // Find index of the phone to update
+        const phoneIndex = person.phones?.findIndex((phone) => phone.id === oldPhone.id);
         if (phoneIndex > -1) {
           person.phones[phoneIndex] = newPhone;
         }
@@ -1728,15 +1165,6 @@ const tableSlice = createSlice({
       .addCase(updateGroupDetails.pending, (state) => {
         state.status = "loading";
       })
-      // .addCase(updateGroupDetails.fulfilled, (state, action) => {
-      //   state.status = "succeeded";
-      //   const updatedGroup = action.payload;
-      //   // Update the corresponding group in the state
-      //   state.data = state.data.map((group) =>
-      //     group.id === updatedGroup.id ? updatedGroup : group
-      //   );
-      //   state.groupDetails = null; // Clear group details after a successful update
-      // })
       .addCase(updateGroupDetails.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const updatedGroup = action.payload;
@@ -1744,44 +1172,37 @@ const tableSlice = createSlice({
           group.id === updatedGroup.groupId ? { ...group, ...updatedGroup } : group
         );
       })
-      
       .addCase(updateGroupDetails.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
 
-      // Delete group
+      // Delete a group
       .addCase(deleteGroup.pending, (state) => {
         state.status = "loading";
       })
       .addCase(deleteGroup.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = state.data.filter((item) => item.id !== action.payload);
+        state.data = state.data.filter((group) => group.id !== action.payload);
       })
       .addCase(deleteGroup.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
 
-      // Delete phone number
+      // Delete a phone number
       .addCase(deletePhone.pending, (state) => {
         state.status = "loading";
       })
       .addCase(deletePhone.fulfilled, (state, action) => {
-        state.status = "succeeded";
         const { phoneId, groupId } = action.payload;
-        // console.log("phoneid", phoneId)
-        // console.log("phoneid", groupId)
-        // Update the corresponding person's phones in the state
-        state.data = state.data.map((group) => {
-          if (group.id === groupId) {
-            return {
-              ...group,
-              phones: group.phones?.filter((phone) => phone.id !== phoneId) || [],
-            };
+        const person = state.data.find((person) => person.id === groupId);
+        if (person) {
+          if (person.phones) {
+            person.phones = person.phones.filter((phone) => phone.id !== phoneId);
           }
-          return group;
-        });
+        }
+        state.status = "succeeded";
       })
       .addCase(deletePhone.rejected, (state, action) => {
         state.status = "failed";
@@ -1797,7 +1218,6 @@ export const {
   deletePhoneNumber,
   setGroupDetailsForEdit,
   resetEditState,
-  
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

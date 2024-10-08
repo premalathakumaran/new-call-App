@@ -66,7 +66,7 @@ const Sidebar = ({ handleGroupClick }) => {
           Group 1
         </button> */}
         <button
-        onClick={() => handleGroupClick('group1')}
+        // onClick={() => handleGroupClick('group1')}  --------> main for routing but simple i made commanded 
         className="p-2 mb-2 text-white font-bold hover:text-black hover:bg-white rounded flex items-center"
 >
         <i className="fas fa-users mr-2"></i>
