@@ -896,6 +896,353 @@
 
 // refresh token ------------------------------
 
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
+// import { refreshToken } from "../redux/authSlice"; // Import the refreshToken function
+
+// // Fetch table data
+// export const fetchTableData = createAsyncThunk(
+//   'table/fetchTableData',
+//   async (_, { rejectWithValue, dispatch }) => {
+//     let token = localStorage.getItem('jwt');
+
+//     if (!token) {
+//       return rejectWithValue('No token found');
+//     }
+
+//     try {
+//       const response = await axios.get(
+//         'http://13.127.211.81:8085/group/getGroupDetails',
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data.data; // Adjust according to your API's response structure
+//     } catch (error) {
+//       // Handle token expiration (401 error)
+//       if (error.response && error.response.status === 401) {
+//         const newToken = await dispatch(refreshToken()); // Refresh the token
+//         if (newToken.payload) { // Check if the new token was successfully fetched
+//           // Retry the original request with the new token
+//           const retryResponse = await axios.get(
+//             'http://13.127.211.81:8085/group/getGroupDetails',
+//             {
+//               headers: {
+//                 Authorization: `Bearer ${newToken.payload}`,
+//               },
+//             }
+//           );
+//           return retryResponse.data.data; // Return the new data
+//         } else {
+//           return rejectWithValue('Session expired. Please log in again.');
+//         }
+//       }
+//       // Log other errors
+//       console.error('Fetch table data error:', error);
+//       return rejectWithValue(
+//         error.response?.data?.message || 'Failed to fetch table data'
+//       );
+//     }
+//   }
+// );
+
+
+
+
+
+// // Fetch group details using the token
+// export const fetchGroupDetails = createAsyncThunk(
+//   "table/fetchGroupDetails",
+//   async (groupId, { rejectWithValue, dispatch }) => {
+//     const token = localStorage.getItem("jwt");
+//     if (!token) {
+//       return rejectWithValue("No token found");
+//     }
+
+//     try {
+//       const response = await axios.get(
+//         `http://13.127.211.81:8085/group/getGroupDetailsById?groupId=${groupId}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       // Handle token expiration (401 error)
+//       if (error.response && error.response.status === 401) {
+//         const newToken = await dispatch(refreshToken()); // Refresh the token
+//         if (newToken.payload) { // Check if the new token was successfully fetched
+//           // Retry the original request with the new token
+//           const retryResponse = await axios.get(
+//             `http://13.127.211.81:8085/group/getGroupDetailsById?groupId=${groupId}`,
+//             {
+//               headers: {
+//                 Authorization: `Bearer ${newToken.payload}`,
+//               },
+//             }
+//           );
+//           return retryResponse.data; // Return the new data
+//         } else {
+//           return rejectWithValue('Session expired. Please log in again.');
+//         }
+//       }
+//       console.error(error);
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to fetch group details"
+//       );
+//     }
+//   }
+// );
+
+// // Update (edit) group details
+// export const updateGroupDetails = createAsyncThunk(
+//   'group/updateGroupDetails',
+//   async ({ formData }, { rejectWithValue }) => {
+//     const token = localStorage.getItem('jwt');
+//     if (!token) {
+//       return rejectWithValue("No token found");
+//     }
+
+//     try {
+//       const response = await axios.post(
+//         'http://13.127.211.81:8085/group/updateGroupDetailsById',
+//         formData,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data.data;
+//     } catch (error) {
+//       console.error(error);
+//       return rejectWithValue(
+//         error.response?.data?.message || 'Failed to update group details'
+//       );
+//     }
+//   }
+// );
+
+// // Delete a group
+// export const deleteGroup = createAsyncThunk(
+//   "table/deleteGroup",
+//   async ({ groupId }, { rejectWithValue }) => {
+//     const token = localStorage.getItem("jwt");
+//     if (!token) {
+//       return rejectWithValue("No token found");
+//     }
+
+//     try {
+//       await axios.post(
+//         `http://13.127.211.81:8085/group/deleteGroupAndGroupDetails?flag=0&groupId=${groupId}`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       return groupId; // Return the ID of the deleted group to remove from state
+//     } catch (error) {
+//       console.error(error);
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to delete group"
+//       );
+//     }
+//   }
+// );
+
+// // Delete a phone number
+// export const deletePhone = createAsyncThunk(
+//   "table/deletePhone",
+//   async ({ phoneId, groupId }, { rejectWithValue, dispatch }) => {
+//     const token = localStorage.getItem("jwt");
+//     if (!token) {
+//       return rejectWithValue("No token found");
+//     }
+
+//     try {
+//       const url = `http://13.127.211.81:8085/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`;
+//       await axios.post(url, {}, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       // Fetch updated group details after deletion
+//       await dispatch(fetchGroupDetails(groupId));
+
+//       return { phoneId, groupId };
+//     } catch (error) {
+//       console.error(error);
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to delete phone number"
+//       );
+//     }
+//   }
+// );
+
+// const tableSlice = createSlice({
+//   name: "table",
+//   initialState: {
+//     data: [],
+//     selectedPerson: null,
+//     status: "idle",
+//     error: null,
+//     groupDetails: null, // Added for editing purposes
+//   },
+//   reducers: {
+//     clearSelectedPerson: (state) => {
+//       state.selectedPerson = null;
+//     },
+//     // addPhoneNumber: (state, action) => {
+//     //   const { id, phone } = action.payload;
+//     //   const person = state.data.find((person) => person.id === id);
+//     //   if (person) {
+//     //     if (!person.phones) person.phones = []; // Ensure phones is defined
+//     //     person.phones.push(phone);
+//     //   }
+//     // },
+//     updatePhoneNumber: (state, action) => {
+//       const { id, oldPhone, newPhone } = action.payload;
+//       const person = state.data.find((person) => person.id === id);
+//       if (person) {
+//         const phoneIndex = person.phones?.findIndex((phone) => phone.id === oldPhone.id);
+//         if (phoneIndex > -1) {
+//           person.phones[phoneIndex] = newPhone;
+//         }
+//       }
+//     },
+//     deletePhoneNumber: (state, action) => {
+//       const { phoneId, groupId } = action.payload;
+//       const person = state.data.find((person) => person.id === groupId);
+//       if (person) {
+//         if (person.phones) {
+//           person.phones = person.phones.filter((phone) => phone.id !== phoneId);
+//         }
+//       }
+//     },
+//     setGroupDetailsForEdit: (state, action) => {
+//       state.groupDetails = action.payload; // Set group details for editing
+//     },
+//     resetEditState: (state) => {
+//       state.groupDetails = null; // Clear group details after editing
+//       state.status = "idle"; // Reset status
+//       state.error = null; // Clear errors
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       // Fetch table data
+//       .addCase(fetchTableData.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(fetchTableData.fulfilled, (state, action) => {
+//         state.status = "succeeded";
+//         state.data = action.payload;
+//       })
+//       .addCase(fetchTableData.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Fetch group details
+//       .addCase(fetchGroupDetails.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(fetchGroupDetails.fulfilled, (state, action) => {
+//         state.selectedPerson = action.payload;
+//         state.status = "succeeded";
+//       })
+//       .addCase(fetchGroupDetails.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Update group details (edit functionality)
+//       .addCase(updateGroupDetails.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(updateGroupDetails.fulfilled, (state, action) => {
+//         state.status = 'succeeded';
+//         const updatedGroup = action.payload;
+//         state.data = state.data.map((group) =>
+//           group.id === updatedGroup.groupId ? { ...group, ...updatedGroup } : group
+//         );
+//       })
+//       .addCase(updateGroupDetails.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Delete a group
+//       .addCase(deleteGroup.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(deleteGroup.fulfilled, (state, action) => {
+//         state.status = "succeeded";
+//         state.data = state.data.filter((group) => group.id !== action.payload);
+//       })
+//       .addCase(deleteGroup.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       })
+
+//       // Delete a phone number
+//       // Update the deletePhone cases
+//       .addCase(deletePhone.pending, (state) => {
+//         state.status = "loading";
+//       })
+//       .addCase(deletePhone.fulfilled, (state, action) => {
+//         const { phoneId, groupId } = action.payload;
+//         state.status = "succeeded";
+        
+//         // Update the selectedPerson state
+//         if (state.selectedPerson && state.selectedPerson.data.groupId === groupId) {
+//           state.selectedPerson.data.mobileNumbers = state.selectedPerson.data.mobileNumbers.filter(
+//             (phone) => phone.groupDetailsId !== phoneId
+//           );
+//         }
+
+//         // Update the main data state
+//         const groupIndex = state.data.findIndex(group => group.id === groupId);
+//         if (groupIndex !== -1) {
+//           state.data[groupIndex].phones = state.data[groupIndex].phones.filter(
+//             (phone) => phone.id !== phoneId
+//           );
+//         }
+//       })
+//       .addCase(deletePhone.rejected, (state, action) => {
+//         state.status = "failed";
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+
+// export const {
+//   clearSelectedPerson,
+//   // addPhoneNumber,
+//   updatePhoneNumber,
+//   deletePhoneNumber,
+//   setGroupDetailsForEdit,
+//   resetEditState,
+// } = tableSlice.actions;
+
+// export default tableSlice.reducer;
+
+
+
+
+
+// sample tryin code -----------------
+
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { refreshToken } from "../redux/authSlice"; // Import the refreshToken function
@@ -919,13 +1266,15 @@ export const fetchTableData = createAsyncThunk(
           },
         }
       );
-      return response.data.data; // Adjust according to your API's response structure
+      console.log("data", response.data.data )
+      return response.data.data; 
+      
+    
+      // Adjust according to your API's response structure
     } catch (error) {
-      // Handle token expiration (401 error)
       if (error.response && error.response.status === 401) {
-        const newToken = await dispatch(refreshToken()); // Refresh the token
-        if (newToken.payload) { // Check if the new token was successfully fetched
-          // Retry the original request with the new token
+        const newToken = await dispatch(refreshToken());
+        if (newToken.payload) {
           const retryResponse = await axios.get(
             'http://13.127.211.81:8085/group/getGroupDetails',
             {
@@ -934,12 +1283,11 @@ export const fetchTableData = createAsyncThunk(
               },
             }
           );
-          return retryResponse.data.data; // Return the new data
+          return retryResponse.data.data;
         } else {
           return rejectWithValue('Session expired. Please log in again.');
         }
       }
-      // Log other errors
       console.error('Fetch table data error:', error);
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch table data'
@@ -948,11 +1296,7 @@ export const fetchTableData = createAsyncThunk(
   }
 );
 
-
-
-
-
-// Fetch group details using the token
+// Fetch group details by ID
 export const fetchGroupDetails = createAsyncThunk(
   "table/fetchGroupDetails",
   async (groupId, { rejectWithValue, dispatch }) => {
@@ -972,11 +1316,9 @@ export const fetchGroupDetails = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      // Handle token expiration (401 error)
       if (error.response && error.response.status === 401) {
-        const newToken = await dispatch(refreshToken()); // Refresh the token
-        if (newToken.payload) { // Check if the new token was successfully fetched
-          // Retry the original request with the new token
+        const newToken = await dispatch(refreshToken());
+        if (newToken.payload) {
           const retryResponse = await axios.get(
             `http://13.127.211.81:8085/group/getGroupDetailsById?groupId=${groupId}`,
             {
@@ -985,7 +1327,7 @@ export const fetchGroupDetails = createAsyncThunk(
               },
             }
           );
-          return retryResponse.data; // Return the new data
+          return retryResponse.data;
         } else {
           return rejectWithValue('Session expired. Please log in again.');
         }
@@ -998,7 +1340,7 @@ export const fetchGroupDetails = createAsyncThunk(
   }
 );
 
-// Update (edit) group details
+// Update group details
 export const updateGroupDetails = createAsyncThunk(
   'group/updateGroupDetails',
   async ({ formData }, { rejectWithValue }) => {
@@ -1046,8 +1388,7 @@ export const deleteGroup = createAsyncThunk(
           },
         }
       );
-
-      return groupId; // Return the ID of the deleted group to remove from state
+      return groupId;
     } catch (error) {
       console.error(error);
       return rejectWithValue(
@@ -1060,7 +1401,7 @@ export const deleteGroup = createAsyncThunk(
 // Delete a phone number
 export const deletePhone = createAsyncThunk(
   "table/deletePhone",
-  async ({ phoneId, groupId }, { rejectWithValue }) => {
+  async ({ phoneId, groupId }, { rejectWithValue, dispatch }) => {
     const token = localStorage.getItem("jwt");
     if (!token) {
       return rejectWithValue("No token found");
@@ -1074,7 +1415,9 @@ export const deletePhone = createAsyncThunk(
         },
       });
 
-      return { phoneId, groupId }; // Return phoneId and groupId to identify which phone was deleted
+      await dispatch(fetchGroupDetails(groupId));
+
+      return { phoneId, groupId };
     } catch (error) {
       console.error(error);
       return rejectWithValue(
@@ -1084,6 +1427,54 @@ export const deletePhone = createAsyncThunk(
   }
 );
 
+
+
+export const regenerateGroupCode = createAsyncThunk(
+  'table/regenerateGroupCode',
+  async ({ groupId, token }, { rejectWithValue, dispatch }) => {
+    if (!token) {
+      return rejectWithValue('No token found');
+    }
+
+    try {
+      const response = await axios.put(
+        `http://13.127.211.81:8085/group/updateGroupCodeByGroupId?groupId=${groupId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        const newToken = await dispatch(refreshToken());
+        if (newToken.payload) {
+          const retryResponse = await axios.put(
+            `http://13.127.211.81:8085/group/updateGroupCodeByGroupId?groupId=${groupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newToken.payload}`,
+              },
+            }
+          );
+          return retryResponse.data.data;
+        } else {
+          return rejectWithValue('Session expired. Please log in again.');
+        }
+      }
+      console.error('Regenerate group code error:', error);
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to regenerate group code'
+      );
+    }
+  }
+);
+
+
+
+
+
 const tableSlice = createSlice({
   name: "table",
   initialState: {
@@ -1091,19 +1482,11 @@ const tableSlice = createSlice({
     selectedPerson: null,
     status: "idle",
     error: null,
-    groupDetails: null, // Added for editing purposes
+    groupDetails: null,
   },
   reducers: {
     clearSelectedPerson: (state) => {
       state.selectedPerson = null;
-    },
-    addPhoneNumber: (state, action) => {
-      const { id, phone } = action.payload;
-      const person = state.data.find((person) => person.id === id);
-      if (person) {
-        if (!person.phones) person.phones = []; // Ensure phones is defined
-        person.phones.push(phone);
-      }
     },
     updatePhoneNumber: (state, action) => {
       const { id, oldPhone, newPhone } = action.payload;
@@ -1125,17 +1508,16 @@ const tableSlice = createSlice({
       }
     },
     setGroupDetailsForEdit: (state, action) => {
-      state.groupDetails = action.payload; // Set group details for editing
+      state.groupDetails = action.payload;
     },
     resetEditState: (state) => {
-      state.groupDetails = null; // Clear group details after editing
-      state.status = "idle"; // Reset status
-      state.error = null; // Clear errors
+      state.groupDetails = null;
+      state.status = "idle";
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Fetch table data
       .addCase(fetchTableData.pending, (state) => {
         state.status = "loading";
       })
@@ -1147,8 +1529,6 @@ const tableSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-
-      // Fetch group details
       .addCase(fetchGroupDetails.pending, (state) => {
         state.status = "loading";
       })
@@ -1160,8 +1540,6 @@ const tableSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-
-      // Update group details (edit functionality)
       .addCase(updateGroupDetails.pending, (state) => {
         state.status = "loading";
       })
@@ -1176,8 +1554,6 @@ const tableSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-
-      // Delete a group
       .addCase(deleteGroup.pending, (state) => {
         state.status = "loading";
       })
@@ -1189,35 +1565,58 @@ const tableSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-
-      // Delete a phone number
+      
       .addCase(deletePhone.pending, (state) => {
         state.status = "loading";
       })
       .addCase(deletePhone.fulfilled, (state, action) => {
         const { phoneId, groupId } = action.payload;
-        const person = state.data.find((person) => person.id === groupId);
-        if (person) {
-          if (person.phones) {
-            person.phones = person.phones.filter((phone) => phone.id !== phoneId);
+        state.status = "succeeded";
+        if (state.selectedPerson && state.selectedPerson.data.groupId === groupId) {
+          state.selectedPerson.data.mobileNumbers = state.selectedPerson.data.mobileNumbers.filter(
+            (phone) => phone.groupDetailsId !== phoneId
+          );
+        }
+        const groupIndex = state.data.findIndex(group => group.id === groupId);
+        if (groupIndex > -1) {
+          const phoneIndex = state.data[groupIndex].mobileNumbers.findIndex(phone => phone.groupDetailsId === phoneId);
+          if (phoneIndex > -1) {
+            state.data[groupIndex].mobileNumbers.splice(phoneIndex, 1);
           }
         }
-        state.status = "succeeded";
       })
       .addCase(deletePhone.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+
+      .addCase(regenerateGroupCode.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(regenerateGroupCode.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const updatedGroup = action.payload;
+        state.data = state.data.map((group) =>
+          group.groupId === updatedGroup.groupId ? { ...group, ...updatedGroup } : group
+        );
+      })
+      .addCase(regenerateGroupCode.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
+      
+      
   },
 });
 
-export const {
-  clearSelectedPerson,
-  addPhoneNumber,
-  updatePhoneNumber,
-  deletePhoneNumber,
-  setGroupDetailsForEdit,
-  resetEditState,
-} = tableSlice.actions;
+// Export actions
+export const { clearSelectedPerson, updatePhoneNumber, deletePhoneNumber, setGroupDetailsForEdit, resetEditState } = tableSlice.actions;
+
+// Export selectors
+export const selectTableData = (state) => state.table.data;
+export const selectGroupDetails = (state) => state.table.selectedPerson;
+export const selectTableStatus = (state) => state.table.status;
+export const selectTableError = (state) => state.table.error;
+export const selectEditGroupDetails = (state) => state.table.groupDetails;
 
 export default tableSlice.reducer;

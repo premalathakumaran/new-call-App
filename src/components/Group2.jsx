@@ -4,7 +4,7 @@ import React from 'react';
 const Group2 = () => {
   return (
     <div>
-      This is Group 2 component
+      Mobile details
     </div>
   );
 };

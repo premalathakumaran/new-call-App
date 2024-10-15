@@ -685,6 +685,113 @@
 
 // checking code for fetch the data ----------------resolve all error code  final code ---------------------------------
 
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
+// import { selectToken } from "../redux/authSlice";
+
+// // Async thunk to save group details
+// export const saveGroupDetails = createAsyncThunk(
+//   "group/saveGroupDetails",
+//   async ({ groupName, mobileNumbers, status }, { getState, rejectWithValue }) => {
+//     const token = selectToken(getState());
+
+//     try {
+//       const response = await axios.post(
+//         "http://13.127.211.81:8085/group/saveGroupDetails",
+//         {
+//           groupName,
+//           isActive: status === "Active",  // Convert status to isActive
+//           createdBy: 1,  // This should match the authenticated user or desired ID
+//           mobileNumber: mobileNumbers.map((number) => ({ mobileNumber: number })),
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response?.data?.message || "Failed to save group details"
+//       );
+//     }
+//   }
+// );
+
+// const groupSlice = createSlice({
+//   name: "group",
+//   initialState: {
+//     groupName: "",
+//     groupId: "",
+//     mobileNumbers: [],  // This stores only the mobile numbers
+//     status: "Active",
+//     isFormVisible: false,
+//     loading: false,  // Track loading state
+//     error: null,  // Error message state
+//   },
+//   reducers: {
+//     setGroupName: (state, action) => {
+//       state.groupName = action.payload;
+//     },
+//     addMobileNumber: (state, action) => {
+//       state.mobileNumbers.push(action.payload.number);  // Add only the number
+//     },
+//     removeMobileNumber: (state, action) => {
+//       state.mobileNumbers.splice(action.payload, 1);  // Remove by index
+//     },
+//     setStatus: (state, action) => {
+//       state.status = action.payload;
+//     },
+//     toggleFormVisibility: (state) => {
+//       state.isFormVisible = !state.isFormVisible;
+//     },
+//     resetForm: (state) => {
+//       state.groupName = "";
+//       state.mobileNumbers = [];
+//       state.status = "Active";
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(saveGroupDetails.pending, (state) => {
+//         state.loading = true;
+//         state.error = null;
+//       })
+//       .addCase(saveGroupDetails.fulfilled, (state) => {
+//         state.groupName = "";
+//         state.mobileNumbers = [];
+//         state.status = "Active";
+//         state.isFormVisible = false;
+//         state.loading = false;
+//       })
+//       .addCase(saveGroupDetails.rejected, (state, action) => {
+//         state.loading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export const {
+//   setGroupName,
+//   addMobileNumber,
+//   removeMobileNumber,
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+// } = groupSlice.actions;
+
+// export const selectGroupName = (state) => state.group.groupName;
+// export const selectMobileNumbers = (state) => state.group.mobileNumbers;
+// export const selectStatus = (state) => state.group.status;
+// export const selectIsFormVisible = (state) => state.group.isFormVisible;
+
+// export default groupSlice.reducer;
+
+
+// trying code ---------------
+
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { selectToken } from "../redux/authSlice";
@@ -694,24 +801,46 @@ export const saveGroupDetails = createAsyncThunk(
   "group/saveGroupDetails",
   async ({ groupName, mobileNumbers, status }, { getState, rejectWithValue }) => {
     const token = selectToken(getState());
+    
+    // Log the mobile numbers to verify input
+    console.log("Mobile Numbers:", mobileNumbers);
+    
+    // Construct the data object
+    const data = {
+      groupName,
+      isActive: status === "Active",  // Convert status to isActive
+      createdBy: 1,  // This should match the authenticated user or desired ID
+      mobileNumber: mobileNumbers.map((number) => ({
+        mobileNumber: number.number, // Use the stored mobile number
+        mobileNumberWithHypens: number.numberHypens // Use the formatted number with hyphens
+
+// //           mobileNumber: mobileNumbers.map((number) => ({ mobileNumber: number })),
+  
+      })),
+    }; 
+
+
+    // Log the constructed data object
+    console.log("Data to be sent:", data);
 
     try {
       const response = await axios.post(
         "http://13.127.211.81:8085/group/saveGroupDetails",
-        {
-          groupName,
-          isActive: status === "Active",  // Convert status to isActive
-          createdBy: 1,  // This should match the authenticated user or desired ID
-          mobileNumber: mobileNumbers.map((number) => ({ mobileNumber: number })),
-        },
+        data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+      
+      // Log the response data
+      console.log("Response data:", response.data);
+      
       return response.data;
     } catch (error) {
+      // Log any error that occurs during the request
+      console.error("Error occurred:", error);
       return rejectWithValue(
         error.response?.data?.message || "Failed to save group details"
       );
@@ -719,12 +848,13 @@ export const saveGroupDetails = createAsyncThunk(
   }
 );
 
+
 const groupSlice = createSlice({
   name: "group",
   initialState: {
     groupName: "",
     groupId: "",
-    mobileNumbers: [],  // This stores only the mobile numbers
+    mobileNumbers:[],  // This stores only the mobile numbers
     status: "Active",
     isFormVisible: false,
     loading: false,  // Track loading state
@@ -734,8 +864,8 @@ const groupSlice = createSlice({
     setGroupName: (state, action) => {
       state.groupName = action.payload;
     },
-    addMobileNumber: (state, action) => {
-      state.mobileNumbers.push(action.payload.number);  // Add only the number
+    addMobileNumber: (state,action) => {
+      state.mobileNumbers.push(action.payload); // Add the entire object
     },
     removeMobileNumber: (state, action) => {
       state.mobileNumbers.splice(action.payload, 1);  // Remove by index
@@ -762,7 +892,7 @@ const groupSlice = createSlice({
         state.groupName = "";
         state.mobileNumbers = [];
         state.status = "Active";
-        state.isFormVisible = false;
+        state.isFormVisible = true;
         state.loading = false;
       })
       .addCase(saveGroupDetails.rejected, (state, action) => {
