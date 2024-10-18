@@ -1076,7 +1076,7 @@
 
 
 
-
+// main code --------------------------------------------------------
 import React, { useState, useEffect, useMemo } from "react";
 import { FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -1113,6 +1113,7 @@ const UserModal = ({
 
   useEffect(() => {
     if (formData?.data?.mobileNumbers) {
+      console.log('Fetched mobile numbers from group details:', formData.data.mobileNumbers);
       setAllPhoneNumbers(formData.data.mobileNumbers);
     }
   }, [formData]);
@@ -1146,6 +1147,7 @@ const UserModal = ({
     }
   
     const formattedNumber = `+${selectedCountryCode.substring(1)}-${phoneNumberObject.nationalNumber}`;
+    console.log('Newly added phone number:', formattedNumber);
   
     if (allPhoneNumbers.some((p) => p.mobileNumber === formattedNumber)) {
       setError('Phone number already exists.');
@@ -1311,6 +1313,12 @@ const UserModal = ({
                   className="border border-gray-300 rounded-lg p-3 w-full"
                 />
               ) : (
+
+              //   <>
+              //   {console.log('Displaying phone number:', phone.mobileNumber)}
+              //   {phone.mobileNumber}
+              // </>
+                
                 phone.mobileNumber
               )}
             </td>

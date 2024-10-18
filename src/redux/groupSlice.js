@@ -825,7 +825,7 @@ export const saveGroupDetails = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        "http://13.127.211.81:8085/group/saveGroupDetails",
+        "https://www.annulartech.net/group/saveGroupDetails",
         data,
         {
           headers: {

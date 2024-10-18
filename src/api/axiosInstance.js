@@ -56,7 +56,7 @@ import axios from 'axios';
 
 // Create an Axios instance with the base URL
 const apiClient = axios.create({
-  baseURL: 'http://13.127.211.81:8085', // Directly using the hardcoded URL
+  baseURL: 'https://www.annulartech.net', // Directly using the hardcoded URL
 });
 
 // Add request interceptor

@@ -106,7 +106,7 @@ const Sidebar = () => {
       </div>
       <nav className="flex-grow">
         <ul className="flex flex-col items-center">
-          
+
           <li className="w-full">
             <Link
               to={"./table"}

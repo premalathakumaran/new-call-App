@@ -61,7 +61,7 @@ export const fetchEmailData = createAsyncThunk(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('jwt');
-      const response = await axios.get('http://13.127.211.81:8085/Mail/getAllMail', {
+      const response = await axios.get('https://www.annulartech.net/Mail/getAllMail', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -73,7 +73,7 @@ export const fetchEmailData = createAsyncThunk(
         try {
           const refreshResponse = await dispatch(refreshToken()).unwrap();
           const newToken = refreshResponse.jwt;
-          const retryResponse = await axios.get('http://13.127.211.81:8085/Mail/getAllMail', {
+          const retryResponse = await axios.get('https://www.annulartech.net/Mail/getAllMail', {
             headers: {
               Authorization: `Bearer ${newToken}`,
             },

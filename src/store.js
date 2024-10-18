@@ -31,6 +31,7 @@ import groupReducer from './redux/groupSlice';
 import modalReducer from './redux/modalSlice';
 import emailReducer from './redux/emailSlice';
 import relatedNumbersReducer from './redux/relatedNumbersSlice';
+import notesReducer from './redux/notesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -40,5 +41,6 @@ export const store = configureStore({
     modal: modalReducer,
     email: emailReducer,
     relatedNumbers: relatedNumbersReducer,
+    notes: notesReducer,
   },
 });
