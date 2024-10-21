@@ -130,7 +130,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFormVisibility, selectIsFormVisible } from '../redux/groupSlice';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/sidebar'; // in old its caps now in small 
 import Header from '../components/Header';
 import GroupForm from '../components/GroupForm'; // Import GroupForm component
 import { Outlet } from 'react-router-dom';
