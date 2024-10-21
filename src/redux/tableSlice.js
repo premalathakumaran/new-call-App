@@ -1447,6 +1447,7 @@ export const updateGroupDetails = createAsyncThunk(
   "group/updateGroupDetails",
   async ({ formData }, { rejectWithValue }) => {
     const token = getToken();
+    console.log("formData", formData)
     if (!token) {
       return rejectWithValue("No token found");
     }

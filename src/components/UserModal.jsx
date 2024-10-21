@@ -1076,14 +1076,382 @@
 
 
 
-// main code --------------------------------------------------------
-import React, { useState, useEffect, useMemo } from "react";
-import { FaTrash, FaEdit, FaSave } from "react-icons/fa";
+// main code -----------------------------final code ---------------------------
+// import React, { useState, useEffect, useMemo } from "react";
+// import { FaTrash, FaEdit, FaSave } from "react-icons/fa";
+// import { useDispatch } from "react-redux";
+// import { deletePhone, fetchGroupDetails, updateGroupDetails } from "../redux/tableSlice";
+// import { parsePhoneNumberFromString } from 'libphonenumber-js';
+// import axios from 'axios';
+// import { FaTimes } from 'react-icons/fa';
+
+// const UserModal = ({
+//   isOpen,
+//   onClose,
+//   person: selectedPerson,
+//   onSave,
+//   formData,
+//   onChange,
+//   isEditing,
+//   onCancel,
+// }) => {
+//   const dispatch = useDispatch();
+//   const [groupName, setGroupName] = useState(formData?.data?.groupName || "");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [editingPhone, setEditingPhone] = useState(null);
+//   const [editPhoneValue, setEditPhoneValue] = useState("");
+//   const [error, setError] = useState('');
+//   const [countries, setCountries] = useState([]);
+//   const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default to USA
+//   const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
+
+//   useEffect(() => {
+//     if (isOpen && selectedPerson?.groupId) {
+//       dispatch(fetchGroupDetails(selectedPerson.groupId));
+//     }
+//   }, [isOpen, selectedPerson, dispatch]);
+
+//   useEffect(() => {
+//     if (formData?.data?.mobileNumbers) {
+//       console.log('Fetched mobile numbers from group details:', formData.data.mobileNumbers);
+//       setAllPhoneNumbers(formData.data.mobileNumbers);
+//     }
+//   }, [formData]);
+
+//   useEffect(() => {
+//     const fetchCountries = async () => {
+//       try {
+//         const response = await axios.get('https://restcountries.com/v3.1/all');
+//         const countryData = response.data.map((country) => ({
+//           isoCode: country.cca2,
+//           name: country.name.common,
+//           callingCode: country?.idd?.root + (country?.idd?.suffixes?.[0] || ''),
+//         }));
+//         setCountries(countryData);
+//       } catch (error) {
+//         setError('Error fetching country data');
+//       }
+//     };
+//     fetchCountries();
+//   }, []);
+
+
+
+
+  
+
+//   const handleAddPhone = () => {
+//     if (phoneNumber.trim() === '') return;
+  
+//     const fullPhoneNumber = `${selectedCountryCode}${phoneNumber}`;
+//     const phoneNumberObject = parsePhoneNumberFromString(fullPhoneNumber);
+  
+//     if (!phoneNumberObject || !phoneNumberObject.isValid()) {
+//       setError('Invalid phone number.');
+//       return;
+//     }
+  
+//     const formattedNumber = `+${selectedCountryCode.substring(1)}-${phoneNumberObject.nationalNumber}`;
+//     console.log('Newly added phone number:', formattedNumber);
+  
+//     if (allPhoneNumbers.some((p) => p.mobileNumber === formattedNumber)) {
+//       setError('Phone number already exists.');
+//       return;
+//     }
+  
+//     setAllPhoneNumbers((prevPhones) => [...prevPhones, { mobileNumber: formattedNumber }]);
+//     setPhoneNumber('');
+//     setError('');
+//   };
+
+
+
+
+
+
+
+//   const handleKeyPress = (e) => {
+//     if (e.key === 'Enter') {
+//       e.preventDefault();
+//       handleAddPhone();
+//     }
+//   };
+
+//   // const handleDeletePhone = async (phone) => {
+//   //   try {
+//   //     if (phone.groupDetailsId) {
+//   //       await dispatch(
+//   //         deletePhone({
+//   //           phoneId: phone.groupDetailsId,
+//   //           groupId: selectedPerson?.data?.groupId,
+//   //         })
+//   //       );
+//   //     }
+//   //     setAllPhoneNumbers(allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber));
+//   //   } catch (error) {
+//   //     setError('Failed to delete phone number. Please try again.');
+//   //   }
+//   // };
+
+//   const handleDeletePhone = async (phone) => {
+//     // Optimistically update UI before the async call
+//     const updatedPhoneNumbers = allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber);
+//     setAllPhoneNumbers(updatedPhoneNumbers);
+  
+//     try {
+//       if (phone.groupDetailsId && selectedPerson?.data?.groupId) {
+        
+//         const phoneId = phone.groupDetailsId;
+//         const groupId = selectedPerson.data.groupId;
+  
+//         // Retrieve the token from local storage
+//         const token = localStorage.getItem('jwt');
+  
+//         // Make the API call to delete the phone
+//         const response = await axios.post(
+//           `https://www.annulartech.net/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`,
+//           {
+//             groupDetailsId: phoneId,
+//             groupId: groupId,
+//             flag: 1,
+//           },
+//           {
+//             headers: {
+//               Authorization: `Bearer ${token}`,
+//             },
+//           }
+//         );
+  
+//         // Check for successful response (e.g., status 200)
+//         if (response.status === 200) {
+//           console.log('Phone number deleted successfully');
+//         } else {
+//           // Handle unexpected response statuses
+//           setError('Failed to delete phone number. Please try again.');
+//           // Revert the optimistic update
+//           setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
+//         }
+//       }
+//     } catch (error) {
+//       // Provide more detailed error logging for debugging
+//       console.error('Error deleting phone number:', error);
+//       setError('Failed to delete phone number. Please try again.');
+//       // Revert the optimistic update
+//       setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
+//     }
+//   };
+
+
+
+
+//   const handleEditPhone = (phone) => {
+//     setEditingPhone(phone.mobileNumber);
+//     setEditPhoneValue(phone.mobileNumber);
+//   };
+
+//   const handleSaveEditedPhone = (phone) => {
+//     if (editPhoneValue.trim() !== "") {
+//       setAllPhoneNumbers(allPhoneNumbers.map((p) =>
+//         p.mobileNumber === phone.mobileNumber ? { ...p, mobileNumber: editPhoneValue } : p
+//       ));
+//       setEditingPhone(null);
+//       setError("");
+//     } else {
+//       setError("Phone number cannot be empty.");
+//     }
+//   };
+
+//   const handleSave = () => {
+//     const updateFormData = {
+//       groupId: formData?.data?.groupId,
+//       groupName: groupName,
+//       isActive: formData?.data?.groupStatus === "Active",
+//       mobileNumber: allPhoneNumbers,
+//     };
+
+//     // dispatch(updateGroupDetails({ formData: updateFormData }));
+
+//     if (onSave) {
+//       onSave(updateFormData);
+//     }
+
+//     onClose();
+//   };
+
+//   return (
+//     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+//       <div className="relative bg-white p-10 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
+//         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 text-2xl">
+//           {/* &times; */}
+//           <FaTimes className="text-xl mt-12  mr-6" />
+//         </button>
+
+//         {isEditing && (
+//           <>
+//             <h2 className="text-2xl font-bold mb-6">Edit User</h2>
+//             <form
+//               onSubmit={(e) => {
+//                 e.preventDefault();
+//                 handleSave();
+//               }}
+//               className="space-y-6"
+//             >
+//               <div>
+//                 <label className="block text-lg font-medium mb-2">Name:</label>
+//                 <input
+//                   type="text"
+//                   name="name"
+//                   value={groupName}
+//                   onChange={({ target: { value } }) => setGroupName(value)}
+//                   className="border border-gray-300 rounded-lg p-3 w-full"
+//                   required
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="block text-lg font-medium mb-2">Add New Phone Number:</label>
+//                 <div className="flex space-x-2">
+//                   <select
+//                     value={selectedCountryCode}
+//                     onChange={({ target: { value } }) => setSelectedCountryCode(value)}
+//                     className="border border-gray-300 rounded-lg p-3"
+//                   >
+//                     {countries.map((country) => (
+//                       <option key={country.isoCode} value={country.callingCode}>
+//                         {country.name} ({country.callingCode})
+//                       </option>
+//                     ))}
+//                   </select>
+//                   <input
+//                     type="text"
+//                     name="newPhoneNumber"
+//                     value={phoneNumber}
+//                     onChange={({ target: { value } }) => setPhoneNumber(value)}
+//                     onKeyPress={handleKeyPress}
+//                     className="border border-gray-300 rounded-lg p-3 w-full"
+//                   />
+//                   <button
+//                     type="button"
+//                     onClick={handleAddPhone}
+//                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+//                     style={{ backgroundColor: '#134572' }}
+//                   >
+//                     Add
+//                   </button>
+//                 </div>
+//                 {error && <p className="text-red-500 mt-2">{error}</p>}
+//               </div>
+
+// <div>
+//   <label className="block text-lg font-medium mb-2">Phone Numbers:</label>
+  
+//   {/* Container for table with fixed height and scroll */}
+//   <div className="overflow-y-auto h-36 border border-gray-300 rounded-lg">
+//     <table className="w-full border-collapse">
+//       <thead>
+//         <tr className="bg-gray-100">
+//           <th className="p-3 text-left">Mobile Number</th>
+//           <th className="p-3 text-left">Actions</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {allPhoneNumbers.map((phone, idx) => (
+//           <tr key={idx} className="border-t">
+//             <td className="p-3">
+//               {editingPhone === phone.mobileNumber ? (
+//                 <input
+//                   type="text"
+//                   value={editPhoneValue}
+//                   onChange={({ target: { value } }) => setEditPhoneValue(value)}
+
+//   //-----------------------
+//                   onKeyDown={(e) => {
+//                     if (e.key === 'Enter') {
+//                       handleSaveEditedPhone(phone);
+//                     }
+//                   }}
+// // ----------------------
+
+//                   className="border border-gray-300 rounded-lg p-3 w-full"
+//                 />
+//               ) : (
+
+//               //   <>
+//               //   {console.log('Displaying phone number:', phone.mobileNumber)}
+//               //   {phone.mobileNumber}
+//               // </>
+                
+//                 phone.mobileNumber
+//               )}
+//             </td>
+//             <td className="p-3 flex space-x-2">
+//               {editingPhone === phone.mobileNumber ? (
+//                 <button
+//                   type="button"
+//                   onClick={() => handleSaveEditedPhone(phone)}
+//                   className="text-green-500"
+//                 >
+//                   <FaSave />
+//                 </button>
+//               ) : (
+//                 <button
+//                   type="button"
+//                   onClick={() => handleEditPhone(phone)}
+//                   className="text-blue-500"
+//                 >
+//                   <FaEdit />
+//                 </button>
+//               )}
+//               <button
+//                 type="button"
+//                 onClick={() => handleDeletePhone(phone)}
+//                 className="text-red-500"
+//               >
+//                 <FaTrash />
+//               </button>
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   </div>
+// </div>
+
+
+//               <div className="flex justify-end">
+//                 {/* <button
+//                   type="button"
+//                   onClick={onCancel}
+//                   className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
+//                   style={{ backgroundColor: '#134572' }}
+//                 >
+//                   Cancel
+//                 </button> */}
+//                 <button
+//                   type="submit"
+//                   className="bg-green-500 text-white px-4 py-2 rounded-lg"
+//                   style={{ backgroundColor: '#134572' }}
+//                 >
+//                   Save
+//                 </button>
+//               </div>
+//             </form>
+//           </>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default UserModal;
+
+
+
+import React, { useState, useEffect } from "react";
+import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { deletePhone, fetchGroupDetails, updateGroupDetails } from "../redux/tableSlice";
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import axios from 'axios';
-import { FaTimes } from 'react-icons/fa';
 
 const UserModal = ({
   isOpen,
@@ -1091,9 +1459,7 @@ const UserModal = ({
   person: selectedPerson,
   onSave,
   formData,
-  onChange,
   isEditing,
-  onCancel,
 }) => {
   const dispatch = useDispatch();
   const [groupName, setGroupName] = useState(formData?.data?.groupName || "");
@@ -1102,19 +1468,16 @@ const UserModal = ({
   const [editPhoneValue, setEditPhoneValue] = useState("");
   const [error, setError] = useState('');
   const [countries, setCountries] = useState([]);
-  const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default to USA
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const [allPhoneNumbers, setAllPhoneNumbers] = useState([]);
 
   useEffect(() => {
-    if (isOpen && selectedPerson?.groupId) {
-      dispatch(fetchGroupDetails(selectedPerson.groupId));
-    }
-  }, [isOpen, selectedPerson, dispatch]);
-
-  useEffect(() => {
     if (formData?.data?.mobileNumbers) {
-      console.log('Fetched mobile numbers from group details:', formData.data.mobileNumbers);
-      setAllPhoneNumbers(formData.data.mobileNumbers);
+      setAllPhoneNumbers(formData.data.mobileNumbers.map(phone => ({
+        ...phone,
+        groupDetailsId: phone.groupDetailsId || null,
+        displayNumber: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
+      })));
     }
   }, [formData]);
 
@@ -1135,68 +1498,64 @@ const UserModal = ({
     fetchCountries();
   }, []);
 
+  const formatPhoneNumberWithHyphen = (number) => {
+    if (!number) return '';
+    const cleaned = number.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{2})(\d{10})$/);
+    if (match) {
+      return `+${match[1]}-${match[2]}`;
+    }
+    return number;
+  };
+
+  const removeHyphenFromNumber = (number) => {
+    return number.replace(/-/g, '');
+  };
+
   const handleAddPhone = () => {
     if (phoneNumber.trim() === '') return;
-  
+
     const fullPhoneNumber = `${selectedCountryCode}${phoneNumber}`;
     const phoneNumberObject = parsePhoneNumberFromString(fullPhoneNumber);
-  
+
     if (!phoneNumberObject || !phoneNumberObject.isValid()) {
       setError('Invalid phone number.');
       return;
     }
-  
-    const formattedNumber = `+${selectedCountryCode.substring(1)}-${phoneNumberObject.nationalNumber}`;
-    console.log('Newly added phone number:', formattedNumber);
-  
-    if (allPhoneNumbers.some((p) => p.mobileNumber === formattedNumber)) {
+
+    const numberWithoutHyphen = removeHyphenFromNumber(fullPhoneNumber);
+    const numberWithHyphen = formatPhoneNumberWithHyphen(fullPhoneNumber);
+
+    // console.log('Number without hyphens:', numberWithoutHyphen);
+    // console.log('Number with hyphens:', numberWithHyphen);
+
+    if (allPhoneNumbers.some((p) => p.mobileNumber === numberWithoutHyphen)) {
       setError('Phone number already exists.');
       return;
     }
-  
-    setAllPhoneNumbers((prevPhones) => [...prevPhones, { mobileNumber: formattedNumber }]);
+
+    const newPhoneEntry = {
+      mobileNumber: numberWithoutHyphen,
+      mobileNumberWithHypens: numberWithHyphen,
+      displayNumber: numberWithHyphen,
+      groupDetailsId: null // Set initial groupDetailsId as null for new entries
+    };
+
+    setAllPhoneNumbers((prevPhones) => [...prevPhones, newPhoneEntry]);
     setPhoneNumber('');
     setError('');
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddPhone();
-    }
-  };
-
-  // const handleDeletePhone = async (phone) => {
-  //   try {
-  //     if (phone.groupDetailsId) {
-  //       await dispatch(
-  //         deletePhone({
-  //           phoneId: phone.groupDetailsId,
-  //           groupId: selectedPerson?.data?.groupId,
-  //         })
-  //       );
-  //     }
-  //     setAllPhoneNumbers(allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber));
-  //   } catch (error) {
-  //     setError('Failed to delete phone number. Please try again.');
-  //   }
-  // };
-
   const handleDeletePhone = async (phone) => {
-    // Optimistically update UI before the async call
     const updatedPhoneNumbers = allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber);
     setAllPhoneNumbers(updatedPhoneNumbers);
-  
+
     try {
       if (phone.groupDetailsId && selectedPerson?.data?.groupId) {
-        
         const phoneId = phone.groupDetailsId;
         const groupId = selectedPerson.data.groupId;
-  
-        // Retrieve the token from local storage
         const token = localStorage.getItem('jwt');
-  
-        // Make the API call to delete the phone
+
         const response = await axios.post(
           `https://www.annulartech.net/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`,
           {
@@ -1210,44 +1569,45 @@ const UserModal = ({
             },
           }
         );
-  
-        // Check for successful response (e.g., status 200)
-        if (response.status === 200) {
-          console.log('Phone number deleted successfully');
-        } else {
-          // Handle unexpected response statuses
+
+        if (response.status !== 200) {
           setError('Failed to delete phone number. Please try again.');
-          // Revert the optimistic update
           setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
         }
       }
     } catch (error) {
-      // Provide more detailed error logging for debugging
       console.error('Error deleting phone number:', error);
       setError('Failed to delete phone number. Please try again.');
-      // Revert the optimistic update
       setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
     }
   };
 
-
-
-
   const handleEditPhone = (phone) => {
     setEditingPhone(phone.mobileNumber);
-    setEditPhoneValue(phone.mobileNumber);
+    setEditPhoneValue(phone.displayNumber);
   };
 
   const handleSaveEditedPhone = (phone) => {
-    if (editPhoneValue.trim() !== "") {
-      setAllPhoneNumbers(allPhoneNumbers.map((p) =>
-        p.mobileNumber === phone.mobileNumber ? { ...p, mobileNumber: editPhoneValue } : p
-      ));
-      setEditingPhone(null);
-      setError("");
-    } else {
+    if (editPhoneValue.trim() === "") {
       setError("Phone number cannot be empty.");
+      return;
     }
+
+    const numberWithoutHyphen = removeHyphenFromNumber(editPhoneValue);
+    const numberWithHyphen = formatPhoneNumberWithHyphen(editPhoneValue);
+
+    setAllPhoneNumbers(allPhoneNumbers.map((p) =>
+      p.mobileNumber === phone.mobileNumber
+        ? {
+            ...p,
+            mobileNumber: numberWithoutHyphen,
+            mobileNumberWithHypens: numberWithHyphen,
+            displayNumber: numberWithHyphen
+          }
+        : p
+    ));
+    setEditingPhone(null);
+    setError("");
   };
 
   const handleSave = () => {
@@ -1255,10 +1615,12 @@ const UserModal = ({
       groupId: formData?.data?.groupId,
       groupName: groupName,
       isActive: formData?.data?.groupStatus === "Active",
-      mobileNumber: allPhoneNumbers,
+      mobileNumber: allPhoneNumbers.map(phone => ({
+        mobileNumber: phone.mobileNumber,
+        mobileNumberWithHypens: phone.mobileNumberWithHypens,
+        groupDetailsId: phone.groupDetailsId
+      }))
     };
-
-    // dispatch(updateGroupDetails({ formData: updateFormData }));
 
     if (onSave) {
       onSave(updateFormData);
@@ -1267,29 +1629,31 @@ const UserModal = ({
     onClose();
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddPhone();
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
       <div className="relative bg-white p-10 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 text-2xl">
-          {/* &times; */}
-          <FaTimes className="text-xl mt-12  mr-6" />
+          <FaTimes className="text-xl mt-12 mr-6" />
         </button>
 
         {isEditing && (
           <>
             <h2 className="text-2xl font-bold mb-6">Edit User</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSave();
-              }}
-              className="space-y-6"
-            >
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handleSave();
+            }} className="space-y-6">
               <div>
                 <label className="block text-lg font-medium mb-2">Name:</label>
                 <input
                   type="text"
-                  name="name"
                   value={groupName}
                   onChange={({ target: { value } }) => setGroupName(value)}
                   className="border border-gray-300 rounded-lg p-3 w-full"
@@ -1313,11 +1677,11 @@ const UserModal = ({
                   </select>
                   <input
                     type="text"
-                    name="newPhoneNumber"
                     value={phoneNumber}
                     onChange={({ target: { value } }) => setPhoneNumber(value)}
                     onKeyPress={handleKeyPress}
                     className="border border-gray-300 rounded-lg p-3 w-full"
+                    placeholder="Enter phone number"
                   />
                   <button
                     type="button"
@@ -1331,91 +1695,77 @@ const UserModal = ({
                 {error && <p className="text-red-500 mt-2">{error}</p>}
               </div>
 
-<div>
-  <label className="block text-lg font-medium mb-2">Phone Numbers:</label>
-  
-  {/* Container for table with fixed height and scroll */}
-  <div className="overflow-y-auto h-36 border border-gray-300 rounded-lg">
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="p-3 text-left">Mobile Number</th>
-          <th className="p-3 text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {allPhoneNumbers.map((phone, idx) => (
-          <tr key={idx} className="border-t">
-            <td className="p-3">
-              {editingPhone === phone.mobileNumber ? (
-                <input
-                  type="text"
-                  value={editPhoneValue}
-                  onChange={({ target: { value } }) => setEditPhoneValue(value)}
+              <div>
+                <label className="block text-lg font-medium mb-2">Phone Numbers:</label>
+                <div className="overflow-y-auto h-36 border border-gray-300 rounded-lg">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="p-3 text-left">Mobile Number</th>
+                        <th className="p-3 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allPhoneNumbers.map((phone, idx) => (
+                        <tr key={idx} className="border-t">
+                          <td className="p-3">
+                            {editingPhone === phone.mobileNumber ? (
+                              <input
+                                type="text"
+                                value={editPhoneValue}
+                                onChange={({ target: { value } }) => setEditPhoneValue(value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSaveEditedPhone(phone);
+                                  }
+                                }}
+                                className="border border-gray-300 rounded-lg p-3 w-full"
+                              />
+                            ) : (
+                              phone.displayNumber
+                            )}
+                          </td>
+                          <td className="p-3 flex space-x-2">
+                            {editingPhone === phone.mobileNumber ? (
+                              <button
+                                type="button"
+                                onClick={() => handleSaveEditedPhone(phone)}
+                                className="text-green-500"
+                              >
+                                <FaSave />
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleEditPhone(phone)}
+                                className="text-blue-500"
+                              >
+                                <FaEdit />
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePhone(phone)}
+                              className="text-red-500"
+                            >
+                              <FaTrash />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
 
-  //-----------------------
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSaveEditedPhone(phone);
-                    }
-                  }}
-// ----------------------
-
-                  className="border border-gray-300 rounded-lg p-3 w-full"
-                />
-              ) : (
-
-              //   <>
-              //   {console.log('Displaying phone number:', phone.mobileNumber)}
-              //   {phone.mobileNumber}
-              // </>
-                
-                phone.mobileNumber
-              )}
-            </td>
-            <td className="p-3 flex space-x-2">
-              {editingPhone === phone.mobileNumber ? (
+              <div className="flex justify-end space-x-4">
                 <button
                   type="button"
-                  onClick={() => handleSaveEditedPhone(phone)}
-                  className="text-green-500"
-                >
-                  <FaSave />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => handleEditPhone(phone)}
-                  className="text-blue-500"
-                >
-                  <FaEdit />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleDeletePhone(phone)}
-                className="text-red-500"
-              >
-                <FaTrash />
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-              <div className="flex justify-end">
-                {/* <button
-                  type="button"
-                  onClick={onCancel}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
-                  style={{ backgroundColor: '#134572' }}
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-lg border border-gray-300"
                 >
                   Cancel
-                </button> */}
+                </button>
                 <button
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-lg"
