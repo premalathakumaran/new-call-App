@@ -1166,21 +1166,72 @@ const UserModal = ({
     }
   };
 
+  // const handleDeletePhone = async (phone) => {
+  //   try {
+  //     if (phone.groupDetailsId) {
+  //       await dispatch(
+  //         deletePhone({
+  //           phoneId: phone.groupDetailsId,
+  //           groupId: selectedPerson?.data?.groupId,
+  //         })
+  //       );
+  //     }
+  //     setAllPhoneNumbers(allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber));
+  //   } catch (error) {
+  //     setError('Failed to delete phone number. Please try again.');
+  //   }
+  // };
+
   const handleDeletePhone = async (phone) => {
+    // Optimistically update UI before the async call
+    const updatedPhoneNumbers = allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber);
+    setAllPhoneNumbers(updatedPhoneNumbers);
+  
     try {
-      if (phone.groupDetailsId) {
-        await dispatch(
-          deletePhone({
-            phoneId: phone.groupDetailsId,
-            groupId: selectedPerson?.data?.groupId,
-          })
+      if (phone.groupDetailsId && selectedPerson?.data?.groupId) {
+        
+        const phoneId = phone.groupDetailsId;
+        const groupId = selectedPerson.data.groupId;
+  
+        // Retrieve the token from local storage
+        const token = localStorage.getItem('jwt');
+  
+        // Make the API call to delete the phone
+        const response = await axios.post(
+          `https://www.annulartech.net/group/deleteGroupAndGroupDetails?flag=1&groupDetailsId=${phoneId}&groupId=${groupId}`,
+          {
+            groupDetailsId: phoneId,
+            groupId: groupId,
+            flag: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
+  
+        // Check for successful response (e.g., status 200)
+        if (response.status === 200) {
+          console.log('Phone number deleted successfully');
+        } else {
+          // Handle unexpected response statuses
+          setError('Failed to delete phone number. Please try again.');
+          // Revert the optimistic update
+          setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
+        }
       }
-      setAllPhoneNumbers(allPhoneNumbers.filter((p) => p.mobileNumber !== phone.mobileNumber));
     } catch (error) {
+      // Provide more detailed error logging for debugging
+      console.error('Error deleting phone number:', error);
       setError('Failed to delete phone number. Please try again.');
+      // Revert the optimistic update
+      setAllPhoneNumbers((prevPhones) => [...prevPhones, phone]);
     }
   };
+
+
+
 
   const handleEditPhone = (phone) => {
     setEditingPhone(phone.mobileNumber);

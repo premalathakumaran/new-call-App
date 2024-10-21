@@ -1574,13 +1574,13 @@ const tableSlice = createSlice({
         }
       }
     },
-    deletePhoneNumber: (state, action) => {
-      const { phoneId, groupId } = action.payload;
-      const person = state.data.find((person) => person.id === groupId);
-      if (person && person.phones) {
-        person.phones = person.phones.filter((phone) => phone.id !== phoneId);
-      }
-    },
+    // deletePhoneNumber: (state, action) => {
+    //   const { phoneId, groupId } = action.payload;
+    //   const person = state.data.find((person) => person.id === groupId);
+    //   if (person && person.phones) {
+    //     person.phones = person.phones.filter((phone) => phone.id !== phoneId);
+    //   }
+    // },
     setGroupDetailsForEdit: (state, action) => {
       state.groupDetails = action.payload;
     },
