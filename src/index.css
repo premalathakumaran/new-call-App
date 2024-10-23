@@ -71,3 +71,13 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 
+body {
+  font-family: 'Inter', 'Inter_fallback', sans-serif;
+} */
+
+
+body {
+  font-family: 'Inter_d65c78', 'Inter_fallbackd65c78', sans-serif;
+}

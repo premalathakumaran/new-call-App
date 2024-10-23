@@ -1394,10 +1394,250 @@
 // export default Table;
 
 
+//------------------------------------------------------
+// import React, { useState, useEffect } from 'react';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
+// import {
+//   fetchTableData,
+//   fetchGroupDetails,
+//   clearSelectedPerson,
+//   deleteGroup,
+//   updateGroupDetails,
+//   regenerateGroupCode,
+// } from '../redux/tableSlice';
+// import { selectMobileNumbers } from '../redux/groupSlice';
+// import { FaSyncAlt } from 'react-icons/fa';
+// import UserModal from './UserModal';
+
+// const Table = () => {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+//   const data = useSelector((state) => state.table.data);
+//   const status = useSelector((state) => state.table.status);
+//   const error = useSelector((state) => state.table.error);
+//   const selectedPerson = useSelector((state) => state.table.selectedPerson);
+//   const mobileNumbers = useSelector(selectMobileNumbers);
+
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [selectedNumber, setSelectedNumber] = useState('');
+
+//   useEffect(() => {
+//     const token = localStorage.getItem('jwt');
+//     if (status === 'idle' && token) {
+//       dispatch(fetchTableData(token));
+//     }
+//   }, [status, dispatch]);
+
+//   const handleEdit = (id, isEditMode) => {
+//     dispatch(fetchGroupDetails(id));
+//     setIsEditing(isEditMode);
+//     setIsModalOpen(true);
+//   };
+
+//   const handleDelete = (id) => {
+//     const confirmDelete = window.confirm('Are you sure you want to delete this group?');
+//     if (confirmDelete) {
+//       const token = localStorage.getItem('jwt');
+//       if (token) {
+//         dispatch(deleteGroup({ groupId: id, token })).then(() => {
+//           dispatch(fetchTableData(token));
+//         });
+//       }
+//     }
+//   };
+
+//   const handleSearchChange = (e) => {
+//     setSearchQuery(e.target.value.toLowerCase());
+//   };
+
+//   const handleSave = (formData) => {
+//     const token = localStorage.getItem('jwt');
+//     if (token) {
+//       // Ensure mobileNumber array has proper structure
+//       const updatedFormData = {
+//         ...formData,
+//         mobileNumber: formData.mobileNumber.map(phone => ({
+//           ...phone,
+//           groupDetailsId: phone.groupDetailsId || null, // Handle undefined groupDetailsId
+//           mobileNumber: phone.mobileNumber,
+//           mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
+//         }))
+//       };
+
+//       dispatch(updateGroupDetails({ formData: updatedFormData, token }))
+//         .then(() => {
+//           dispatch(fetchTableData(token));
+//           setIsModalOpen(false);
+//           setIsEditing(false);
+//         });
+//     }
+//   };
+
+//   const handleCancel = () => {
+//     setIsModalOpen(false);
+//     setIsEditing(false);
+//     dispatch(clearSelectedPerson());
+//   };
+
+//   const handleRegenerate = (groupId) => {
+//     const token = localStorage.getItem('jwt');
+//     if (token) {
+//       dispatch(regenerateGroupCode({ groupId, token }))
+//         .then(() => {
+//           dispatch(fetchTableData(token));
+//         });
+//     }
+//   };
+
+//   const handleNumberSelect = (e, groupId) => {
+//     const number = e.target.value;
+//     setSelectedNumber(number);
+//     if (number) {
+//       navigate(`/admin/group?number=${number}`);
+//     }
+//   };
+
+//   const formatPhoneNumberWithHyphen = (number) => {
+//     if (!number) return '';
+//     const cleaned = number.replace(/\D/g, '');
+//     const match = cleaned.match(/^(\d{2})(\d{10})$/);
+//     if (match) {
+//       return `+${match[1]}-${match[2]}`;
+//     }
+//     return number;
+//   };
+
+//   const filteredData = data.filter((item) =>
+//     item?.groupName?.toLowerCase().includes(searchQuery) ||
+//     item?.mobileNumbers?.some((phone) => 
+//       phone.mobileNumber.toLowerCase().includes(searchQuery) ||
+//       (phone.mobileNumberWithHypens && phone.mobileNumberWithHypens.toLowerCase().includes(searchQuery))
+//     ) ||
+//     item?.groupCode?.toLowerCase().includes(searchQuery) ||
+//     (item?.isActive ? 'active' : 'inactive').includes(searchQuery)
+//   );
+
+//   const deduplicatePhones = (phones) => {
+//     return Array.from(new Set(phones.map((phone) => phone.mobileNumber)))
+//       .map((mobileNumber) => {
+//         const phone = phones.find((p) => p.mobileNumber === mobileNumber);
+//         return {
+//           ...phone,
+//           mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
+//         };
+//       });
+//   };
+
+//   if (status === 'loading') return <p>Loading...</p>;
+//   if (status === 'failed') return <p>Error: {error}</p>;
+
+//   return (
+//     <div className="flex-1 p-4">
+//       <div className="mb-4">
+//         <input
+//           type="text"
+//           placeholder="Search..."
+//           value={searchQuery}
+//           onChange={handleSearchChange}
+//           className="border border-gray-500 rounded-lg px-4 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//         />
+//       </div>
+
+//       <div className="overflow-auto max-h-96">
+//       <table className="min-w-full  divide-y divide-gray-300">
+//   <thead style={{ backgroundColor: '#E6E6E6' }}>
+//     <tr>
+//       <th className="p-4 text-left">Group Name</th>
+//       <th className="p-4 text-left">Group Code</th>
+//       <th className="p-4 text-left">Mobile Numbers</th>
+//       <th className="p-4 text-left">Status</th>
+//       <th className="p-4 text-left">Actions</th>
+//     </tr>
+//   </thead>
+//   <tbody>
+//     {filteredData.length > 0 ? (
+//       filteredData.map((item) => (
+//         <React.Fragment key={item.groupId}>
+//           <tr>
+//             <td className="p-4 cursor-pointer text-black">
+//               {item.groupName || 'N/A'} 
+//             </td>
+//             <td className="p-4 cursor-pointer text-black">
+//               {item.groupCode || 'N/A'}
+//               <button
+//                 className="ml-2 text-blue-500 hover:text-blue-600"
+//                 onClick={() => handleRegenerate(item.groupId)}
+//                 title="Reload Code"
+//               >
+//                 <FaSyncAlt size={16} />
+//               </button>
+//             </td>
+//             <td className="p-4">
+//               {item.mobileNumbers && item.mobileNumbers.length > 0 ? (
+//                 <select 
+//                   className="border border-gray-300 rounded-lg px-2 py-1"
+//                   onChange={(e) => handleNumberSelect(e, item.groupId)}
+//                   value={selectedNumber}
+//                 >
+//                   <option value="">Select a number</option>
+//                   {deduplicatePhones(item.mobileNumbers).map((phone, idx) => (
+//                     <option key={idx} value={phone.mobileNumber}>
+//                       {phone.mobileNumberWithHypens}
+//                     </option>
+//                   ))}
+//                 </select>
+//               ) : (
+//                 <span>N/A</span>
+//               )}
+//             </td>
+//             <td className="p-4 text-green-500">
+//               {item.isActive ? 'Active' : 'Inactive'}
+//             </td>
+//             <td className="p-4">
+//               <button onClick={() => handleEdit(item.groupId, true)} className="mr-6 text-blue-500">Edit</button>
+//               <button onClick={() => handleDelete(item.groupId)} className="text-red-500">Delete</button>
+//             </td>
+//           </tr>
+//           {/* Line separating each group */}
+//           <tr>
+//             <td colSpan="5" className="border-b border-gray-300"></td>
+//           </tr>
+//         </React.Fragment>
+//       ))
+//     ) : (
+//       <tr>
+//         <td colSpan="5" className="p-4 text-center">No data available</td>
+//       </tr>
+//     )}
+//   </tbody>
+// </table>
+
+//       </div>
+
+//       {selectedPerson && (
+//         <UserModal
+//           isOpen={isModalOpen}
+//           onClose={handleCancel}
+//           person={selectedPerson}
+//           onSave={handleSave}
+//           formData={selectedPerson}
+//           isEditing={isEditing}
+//           onCancel={handleCancel}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Table;
+
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
   fetchTableData,
   fetchGroupDetails,
@@ -1413,6 +1653,7 @@ import UserModal from './UserModal';
 const Table = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const searchQuery = useOutletContext();
   const data = useSelector((state) => state.table.data);
   const status = useSelector((state) => state.table.status);
   const error = useSelector((state) => state.table.error);
@@ -1421,7 +1662,6 @@ const Table = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedNumber, setSelectedNumber] = useState('');
 
   useEffect(() => {
@@ -1449,22 +1689,17 @@ const Table = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value.toLowerCase());
-  };
-
   const handleSave = (formData) => {
     const token = localStorage.getItem('jwt');
     if (token) {
-      // Ensure mobileNumber array has proper structure
       const updatedFormData = {
         ...formData,
         mobileNumber: formData.mobileNumber.map(phone => ({
           ...phone,
-          groupDetailsId: phone.groupDetailsId || null, // Handle undefined groupDetailsId
+          groupDetailsId: phone.groupDetailsId || null,
           mobileNumber: phone.mobileNumber,
-          mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
-        }))
+          mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber),
+        })),
       };
 
       dispatch(updateGroupDetails({ formData: updatedFormData, token }))
@@ -1512,7 +1747,7 @@ const Table = () => {
 
   const filteredData = data.filter((item) =>
     item?.groupName?.toLowerCase().includes(searchQuery) ||
-    item?.mobileNumbers?.some((phone) => 
+    item?.mobileNumbers?.some((phone) =>
       phone.mobileNumber.toLowerCase().includes(searchQuery) ||
       (phone.mobileNumberWithHypens && phone.mobileNumberWithHypens.toLowerCase().includes(searchQuery))
     ) ||
@@ -1526,7 +1761,7 @@ const Table = () => {
         const phone = phones.find((p) => p.mobileNumber === mobileNumber);
         return {
           ...phone,
-          mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
+          mobileNumberWithHypens: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber),
         };
       });
   };
@@ -1535,75 +1770,70 @@ const Table = () => {
   if (status === 'failed') return <p>Error: {error}</p>;
 
   return (
-    <div className="flex-1 p-4">
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="border border-gray-500 rounded-lg px-4 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
+    <div className="flex-1">
       <div className="overflow-auto max-h-96">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
+        <table className="min-w-full divide-y divide-gray-300">
+          <thead style={{ backgroundColor: '#F7F7F7' }}>
             <tr>
-              <th className="p-3 text-left">Group Name</th>
-              <th className="p-3 text-left">GroupCode</th>
-              <th className="p-3 text-left">Mobile Numbers</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Actions</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Group Name</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Group Code</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Mobile Numbers</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length > 0 ? (
               filteredData.map((item) => (
-                <tr key={item.groupId}>
-                  <td className="p-3 cursor-pointer text-black-500">
-                    {item.groupName || 'N/A'} 
-                  </td>
-                  <td className="p-3 cursor-pointer text-black-500">
-                    {item.groupCode || 'N/A'}
-                    <button
-                      className="ml-2 text-blue-500 hover:text-blue-600"
-                      onClick={() => handleRegenerate(item.groupId)}
-                      title="Reload Code"
-                    >
-                      <FaSyncAlt size={16} />
-                    </button>
-                  </td>
-                  <td className="p-3">
-                    {item.mobileNumbers && item.mobileNumbers.length > 0 ? (
-                      <select 
-                        className="border border-gray-300 rounded-lg px-2 py-1"
-                        onChange={(e) => handleNumberSelect(e, item.groupId)}
-                        value={selectedNumber}
+                <React.Fragment key={item.groupId}>
+                  <tr>
+                    <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
+                      {item.groupName || 'N/A'}
+                    </td>
+                    <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
+                      {item.groupCode || 'N/A'}
+                      <button
+                        className="ml-1 text-blue-500 hover:text-blue-600"
+                        onClick={() => handleRegenerate(item.groupId)}
+                        title="Reload Code"
                       >
-                        <option value="">Select a number</option>
-                        {deduplicatePhones(item.mobileNumbers).map((phone, idx) => (
-                          <option key={idx} value={phone.mobileNumber}>
-                            {phone.mobileNumberWithHypens}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span>N/A</span>
-                    )}
-                  </td>
-                  <td className="p-3 text-green-500">
-                    {item.isActive ? 'Active' : 'Inactive'}
-                  </td>
-                  <td className="p-3">
-                    <button onClick={() => handleEdit(item.groupId, true)} className="mr-6 text-blue-500">Edit</button>
-                    <button onClick={() => handleDelete(item.groupId)} className="text-red-500">Delete</button>
-                  </td>
-                </tr>
+                        <FaSyncAlt size={16} />
+                      </button>
+                    </td>
+                    <td className="px-4 py-2 text-sm">
+                      {item.mobileNumbers && item.mobileNumbers.length > 0 ? (
+                        <select
+                          className="border border-gray-300 rounded-lg px-1 py-1 text-sm"
+                          onChange={(e) => handleNumberSelect(e, item.groupId)}
+                          value={selectedNumber}
+                        >
+                          <option value="text-gray-500">Select a number</option>
+                          {deduplicatePhones(item.mobileNumbers).map((phone, idx) => (
+                            <option key={idx} value={phone.mobileNumber}>
+                              {phone.mobileNumberWithHypens}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span>N/A</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-green-500">
+                      {item.isActive ? 'Active' : 'Inactive'}
+                    </td>
+                    <td className="px-4 py-2 text-sm">
+                      <button onClick={() => handleEdit(item.groupId, true)} className="mr-4 text-blue-500">Edit</button>
+                      <button onClick={() => handleDelete(item.groupId)} className="text-red-500">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="5" className="border-b border-gray-300"></td>
+                  </tr>
+                </React.Fragment>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="p-3 text-center">No data available</td>
+                <td colSpan="5" className="p-4 text-center">No data available</td>
               </tr>
             )}
           </tbody>

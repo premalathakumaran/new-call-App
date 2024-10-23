@@ -93,6 +93,72 @@
 
 // this code with page routing --------------------------------------------------
 
+// import React from 'react';
+// import logo from "/src/assets/logoone.png";
+// import { Link } from "react-router-dom";
+// import { FaUserFriends, FaMobileAlt, FaEnvelope } from "react-icons/fa";
+
+// const Sidebar = () => {
+//   return (
+//     <div className="w-72 h-screen bg-[#134572] text-white flex flex-col" style={{ backgroundColor: "#134572" }}>
+//       <div className="flex justify-center mb-2">
+//         <img src={logo} alt="Annular Technology" className="w-36 mt-6" />
+//       </div>
+//       <nav className="flex-grow">
+//         <ul className="flex flex-col items-center">
+
+//           <li className="w-full">
+//             <Link
+//               to={"./table"}
+//               className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2 "
+//             >
+//               <FaUserFriends className="mr-2" style={{ fontSize: '24px', strokeWidth: '2' }} /> Groups
+//             </Link>
+//           </li>
+
+//           {/* <li className="w-full">
+//             <Link
+//               to={"./group"}
+//               className="flex items-center justify-center w-full py-2 text-white font-bold hover:bg-white hover:text-[#134572] rounded transition-colors duration-300 mt-2 mb-2"
+//             >
+//               <FaMobileAlt className="mr-2"  style={{ fontSize: '22px', strokeWidth: '2' }} />
+//               Mobile Data
+//             </Link>
+//           </li> */}
+
+//           <li className="w-full">
+//             <Link
+//               to={"./Email"}
+//               className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2 "
+//             >
+//               <FaEnvelope className="mr-2" style={{ fontSize: '22px', strokeWidth: '2' }}  />
+//               EMail Data
+//             </Link>
+//           </li>
+
+//           <li className="w-full">
+//             <Link
+//               to={"./group"}
+//               className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2 "
+//             >
+//               <FaMobileAlt className="mr-2"  style={{ fontSize: '22px', strokeWidth: '2' }} />
+//               Mobile Data
+//             </Link>
+//           </li>
+
+//         </ul>
+//       </nav>
+//     </div>
+//   );
+// };
+
+// export default Sidebar;
+
+
+//className="block text-white hover:text-white-300"
+
+
+// testing code -----------
 import React from 'react';
 import logo from "/src/assets/logoone.png";
 import { Link } from "react-router-dom";
@@ -100,9 +166,12 @@ import { FaUserFriends, FaMobileAlt, FaEnvelope } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
-    <div className="w-64 h-screen bg-[#134572] text-white flex flex-col" style={{ backgroundColor: "#134572" }}>
-      <div className="flex justify-center mb-6">
-        <img src={logo} alt="Annular Technology" className="w-32 mt-6" />
+    <div 
+      className="w-72 h-screen bg-[#134572] text-white flex flex-col" 
+      style={{ backgroundColor: "#134572", fontFamily: 'Inter_d65c78, FallbackD65C78, sans-serif' }}
+    >
+      <div className="flex justify-center mb-2">
+        <img src={logo} alt="Annular Technology" className="w-36 mt-6" />
       </div>
       <nav className="flex-grow">
         <ul className="flex flex-col items-center">
@@ -110,28 +179,20 @@ const Sidebar = () => {
           <li className="w-full">
             <Link
               to={"./table"}
-              className="flex items-center justify-center w-full py-2 text-white font-bold hover:bg-white hover:text-[#134572] rounded transition-colors duration-300 mt-6 mb-2"
+              className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2"
+              style={{ fontFamily: 'Inter_d65c78, FallbackD65C78, sans-serif', fontSize: '13px' }} // Set font size to 13px
             >
-              <FaUserFriends className="mr-2" style={{ fontSize: '24px', strokeWidth: '2' }} />           Groups
+              <FaUserFriends className="mr-2" style={{ fontSize: '20px', strokeWidth: '2' }} /> Groups
             </Link>
           </li>
-
-          {/* <li className="w-full">
-            <Link
-              to={"./group"}
-              className="flex items-center justify-center w-full py-2 text-white font-bold hover:bg-white hover:text-[#134572] rounded transition-colors duration-300 mt-2 mb-2"
-            >
-              <FaMobileAlt className="mr-2"  style={{ fontSize: '22px', strokeWidth: '2' }} />
-              Mobile Data
-            </Link>
-          </li> */}
 
           <li className="w-full">
             <Link
               to={"./Email"}
-              className="flex items-center justify-center w-full py-2 text-white font-bold hover:bg-white hover:text-[#134572] rounded transition-colors duration-300 mt-2 mb-2"
+              className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2"
+              style={{ fontFamily: 'Inter_d65c78, FallbackD65C78, sans-serif', fontSize: '13px' }} // Set font size to 13px
             >
-              <FaEnvelope className="mr-2" style={{ fontSize: '22px', strokeWidth: '2' }}  />
+              <FaEnvelope className="mr-2" style={{ fontSize: '20px', strokeWidth: '2' }} />
               EMail Data
             </Link>
           </li>
@@ -139,9 +200,10 @@ const Sidebar = () => {
           <li className="w-full">
             <Link
               to={"./group"}
-              className="flex items-center justify-center w-full py-2 text-white font-bold hover:bg-white hover:text-[#134572] rounded transition-colors duration-300 mt-2 mb-2"
+              className="flex gap-4 items-center p-3 justify-strat w-full text-white hover:bg-white hover:text-black mb-2"
+              style={{ fontFamily: 'Inter_d65c78, FallbackD65C78, sans-serif', fontSize: '13px' }} // Set font size to 13px
             >
-              <FaMobileAlt className="mr-2"  style={{ fontSize: '22px', strokeWidth: '2' }} />
+              <FaMobileAlt className="mr-2" style={{ fontSize: '20px', strokeWidth: '2' }} />
               Mobile Data
             </Link>
           </li>
@@ -155,6 +217,5 @@ const Sidebar = () => {
 export default Sidebar;
 
 
-//className="block text-white hover:text-white-300"
 
 

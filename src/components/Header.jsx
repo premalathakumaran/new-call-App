@@ -32,7 +32,7 @@ const Header = () => {
   };
 
   return (
-    <div className="w-full bg-gray-200 p-4 shadow-md flex justify-between items-center">
+    <div className="w-full  p-3 shadow-md flex justify-between items-center" style={{ backgroundColor: '#F9F9F9' }}>
       <h1 className="text-xl font-bold">Admin Dashboard</h1>
       <button onClick={handleLogout} className="flex items-center text-red-500">
       <HiOutlineLogout className="mr-2 text-black rounded-full" 

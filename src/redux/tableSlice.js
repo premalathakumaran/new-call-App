@@ -1458,6 +1458,7 @@ export const updateGroupDetails = createAsyncThunk(
         formData,
         getAuthHeaders(token)
       );
+      // console.log("response.data.data", response.data.data)
       return response.data.data;
     } catch (error) {
       return rejectWithValue(

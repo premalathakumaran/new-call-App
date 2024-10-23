@@ -969,11 +969,11 @@ const GroupForm = () => {
 
   return (
     <div className="bg-white p-8 rounded-lg  max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-6">New Group</h2>
+      <h2 className="text-xl font-bold mb-6">New Group</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
         <div>
-          <label className="block text-lg font-medium mb-2">Group Name:</label>
+          <label className="block text-sm font-medium mb-2">Group Name:</label>
           <input
             type="text"
             value={groupName}
@@ -985,7 +985,7 @@ const GroupForm = () => {
 
 
         <div>
-  <label className="block text-lg font-medium mb-2">Mobile Numbers:</label>
+  <label className="block text-sm font-medium mb-2">Mobile Numbers:</label>
   <div className="flex">
     <select
       value={selectedCountryCode}
@@ -1004,12 +1004,12 @@ const GroupForm = () => {
       onChange={handleMobileNumberChange}
       onKeyDown={handleKeyDown}
       placeholder="Enter mobile number"
-      className="border border-gray-300 rounded-lg p-3 flex-1"
+      className="border text-sm border-gray-300 rounded-lg p-3 flex-1"
     />
     <button
       type="button"
       onClick={handleAddMobileNumber}
-      className="text-white rounded-lg p-3 ml-2"
+      className="text-white text-sm rounded-lg p-3 ml-2"
       style={{ backgroundColor: '#134572' }}
     >
       Add
@@ -1021,8 +1021,8 @@ const GroupForm = () => {
     <table className="w-full border-collapse">
       <thead>
         <tr className="bg-gray-100">
-          <th className="border border-gray-300 px-4 py-2 text-left">Mobile Number</th>
-          <th className="border border-gray-300 px-4 py-2 text-left">Action</th>
+          <th className="border text-sm border-gray-300 px-4 py-2 text-left">Mobile Number</th>
+          <th className="border text-sm border-gray-300 px-4 py-2 text-left">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -1049,7 +1049,7 @@ const GroupForm = () => {
 
 
         <div>
-          <label className="block text-lg font-medium mb-2">Status:</label>
+          <label className="block text-sm font-medium mb-2">Status:</label>
           <select
             value={status}
             onChange={handleStatusChange}
@@ -1059,7 +1059,7 @@ const GroupForm = () => {
             <option value="Inactive">Inactive</option>
           </select>
         </div>
-        <button type="submit" className=" text-white rounded-lg p-3 w-full" style={{ backgroundColor: '#134572' }}>
+        <button type="submit" className=" text-white text-sm rounded-lg p-3 w-full" style={{ backgroundColor: '#134572' }}>
           Save Group
         </button>
       </form>
