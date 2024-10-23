@@ -2027,7 +2027,7 @@ const UserModal = ({
                   <button
                     type="button"
                     onClick={handleAddPhone}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                    className="bg-blue-500 text-sm text-white px-4 py-2 rounded-lg"
                     style={{ backgroundColor: '#134572' }}
                   >
                     Add
@@ -2099,14 +2099,14 @@ const UserModal = ({
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-4">
-                <button
+              <div className="flex  text-sm justify-end space-x-4">
+                {/* <button
                   type="button"
                   onClick={onClose}
                   className="px-4 py-2 rounded-lg border border-gray-300"
                 >
                   Cancel
-                </button>
+                </button> */}
                 <button
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-lg"

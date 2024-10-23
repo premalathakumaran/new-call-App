@@ -968,7 +968,7 @@ const GroupForm = () => {
   if (!isFormVisible) return null;
 
   return (
-    <div className="bg-white p-8 rounded-lg  max-w-lg mx-auto">
+    <div className="bg-white p-6 rounded-lg  max-w-lg mx-auto">
       <h2 className="text-xl font-bold mb-6">New Group</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
@@ -1053,7 +1053,7 @@ const GroupForm = () => {
           <select
             value={status}
             onChange={handleStatusChange}
-            className="border border-gray-300 rounded-lg p-3 w-full"
+            className="border text-sm border-gray-300 rounded-lg p-3 w-full"
           >
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>

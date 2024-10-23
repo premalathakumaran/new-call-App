@@ -167,7 +167,7 @@ import { FaUserFriends, FaMobileAlt, FaEnvelope } from "react-icons/fa";
 const Sidebar = () => {
   return (
     <div 
-      className="w-72 h-screen bg-[#134572] text-white flex flex-col" 
+      className="w-64 h-screen bg-[#134572] text-white flex flex-col" 
       style={{ backgroundColor: "#134572", fontFamily: 'Inter_d65c78, FallbackD65C78, sans-serif' }}
     >
       <div className="flex justify-center mb-2">

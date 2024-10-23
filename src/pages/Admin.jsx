@@ -328,7 +328,7 @@ const Admin = () => {
            </div>
            <button
              onClick={handleToggleForm}
-             className="text-white px-4 py-1.5"
+             className="text-white  px-4 py-1.5"
              style={{ backgroundColor: '#134572' }}
            >
              {isFormVisible ? 'Hide Form' : 'Create Group'}
