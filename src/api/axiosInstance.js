@@ -54,7 +54,6 @@
 
 import axios from 'axios';
 
-// Create an Axios instance with the base URL
 const apiClient = axios.create({
   baseURL: 'https://www.annulartech.net', 
 });
@@ -71,7 +70,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)   
 );
 
-// Add response interceptor for refreshing the token
+
 apiClient.interceptors.response.use(
   (response) => response, // Return the response
   async (error) => {
