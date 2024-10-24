@@ -56,19 +56,19 @@ import axios from 'axios';
 
 // Create an Axios instance with the base URL
 const apiClient = axios.create({
-  baseURL: 'https://www.annulartech.net', // Directly using the hardcoded URL
+  baseURL: 'https://www.annulartech.net', 
 });
 
-// Add request interceptor
+
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('jwt'); // Retrieve JWT from localStorage
+    const token = localStorage.getItem('jwt'); 
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Set Authorization header
+      config.headers['Authorization'] = `Bearer ${token}`; 
     }
     return config;
   },
-  (error) => Promise.reject(error) // Handle request error
+  (error) => Promise.reject(error)   
 );
 
 // Add response interceptor for refreshing the token
@@ -99,7 +99,7 @@ apiClient.interceptors.response.use(
 
         const { jwt } = response.data; // Get new JWT from response
         localStorage.setItem('jwt', jwt); // Store new JWT securely
-        apiClient.defaults.headers.common['Authorization'] = `Bearer ${jwt}`; // Update default header
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${jwt}`; 
 
         return apiClient(originalRequest); // Retry the original request
       } catch (refreshError) {
@@ -108,7 +108,7 @@ apiClient.interceptors.response.use(
       }
     }
 
-    return Promise.reject(error); // Reject the original error
+    return Promise.reject(error); 
   }
 );
 

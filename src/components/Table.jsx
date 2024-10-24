@@ -1792,7 +1792,7 @@ const Table = () => {
               filteredData.map((item) => (
                 <React.Fragment key={item.groupId}>
                   <tr>
-                    <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
+                    <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
                       {item.groupName || 'N/A'}
                     </td>
                     <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
@@ -1824,7 +1824,7 @@ const Table = () => {
                       )}
                     </td>
                     <td className="px-4 py-2 text-sm text-green-500">
-                      {item.isActive ? 'Active' : 'Inactive'}
+                     {item.isActive !== false ? 'Active' : 'Inactive'}
                     </td>
                     <td className="px-4 py-2 text-sm">
                       <button onClick={() => handleEdit(item.groupId, true)} className="mr-4 text-blue-500">Edit</button>
