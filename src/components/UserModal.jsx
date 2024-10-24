@@ -1815,7 +1815,7 @@ const UserModal = ({
       setAllPhoneNumbers(formData.data.mobileNumbers.map(phone => ({
         ...phone,
         groupDetailsId: phone.groupDetailsId || null,
-        displayNumber: phone.mobileNumberWithHypens || formatPhoneNumberWithHyphen(phone.mobileNumber)
+        displayNumber: formatPhoneNumberWithHyphen(phone.mobileNumber) // Updated to use new formatting
       })));
     }
   }, [formData]);
@@ -1839,16 +1839,24 @@ const UserModal = ({
 
   const formatPhoneNumberWithHyphen = (number) => {
     if (!number) return '';
+    
+    // Remove any existing formatting
     const cleaned = number.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{2})(\d{10})$/);
-    if (match) {
-      return `+${match[1]}-${match[2]}`;
-    }
-    return number;
+    
+    // Extract country code and remaining digits
+    const phoneObj = parsePhoneNumberFromString(number);
+    if (!phoneObj) return number;
+
+    const countryCode = phoneObj.countryCallingCode;
+    const nationalNumber = phoneObj.nationalNumber;
+
+    // Return formatted number with hyphen after country code
+    return `+${countryCode}-${nationalNumber}`;
   };
 
   const removeHyphenFromNumber = (number) => {
-    return number.replace(/-/g, '');
+    if (!number) return '';
+    return number.replace(/\D/g, '');
   };
 
   const handleAddPhone = () => {
@@ -1862,7 +1870,7 @@ const UserModal = ({
       return;
     }
 
-    const numberWithoutHyphen = removeHyphenFromNumber(fullPhoneNumber);
+    const numberWithoutHyphen = `+${removeHyphenFromNumber(fullPhoneNumber)}`;
     const numberWithHyphen = formatPhoneNumberWithHyphen(fullPhoneNumber);
 
     if (allPhoneNumbers.some((p) => p.mobileNumber === numberWithoutHyphen)) {
@@ -1875,7 +1883,7 @@ const UserModal = ({
       mobileNumberWithHypens: numberWithHyphen,
       displayNumber: numberWithHyphen,
       groupDetailsId: null,
-      createdBy: 1 // Adding createdBy field for new entries
+      createdBy: 1
     };
 
     setAllPhoneNumbers((prevPhones) => [...prevPhones, newPhoneEntry]);
@@ -1899,7 +1907,7 @@ const UserModal = ({
             groupDetailsId: phoneId,
             groupId: groupId,
             flag: 1,
-            createdBy: 1 // Adding createdBy field for deletion
+            createdBy: 1
           },
           {
             headers: {
@@ -1931,7 +1939,13 @@ const UserModal = ({
       return;
     }
 
-    const numberWithoutHyphen = removeHyphenFromNumber(editPhoneValue);
+    const phoneNumberObject = parsePhoneNumberFromString(editPhoneValue);
+    if (!phoneNumberObject || !phoneNumberObject.isValid()) {
+      setError('Invalid phone number.');
+      return;
+    }
+
+    const numberWithoutHyphen = `+${removeHyphenFromNumber(editPhoneValue)}`;
     const numberWithHyphen = formatPhoneNumberWithHyphen(editPhoneValue);
 
     setAllPhoneNumbers(allPhoneNumbers.map((p) =>
@@ -1941,7 +1955,7 @@ const UserModal = ({
             mobileNumber: numberWithoutHyphen,
             mobileNumberWithHypens: numberWithHyphen,
             displayNumber: numberWithHyphen,
-            createdBy: 1 // Adding createdBy field for edited entries
+            createdBy: 1
           }
         : p
     ));
@@ -1954,12 +1968,11 @@ const UserModal = ({
       groupId: formData?.data?.groupId,
       groupName: groupName,
       isActive: formData?.data?.groupStatus === "Active",
-      createdBy: 1, // Adding createdBy field to the main form data
+      createdBy: 1,
       mobileNumber: allPhoneNumbers.map(phone => ({
         mobileNumber: phone.mobileNumber,
         mobileNumberWithHypens: phone.mobileNumberWithHypens,
         groupDetailsId: phone.groupDetailsId,
-        // createdBy: 1 // Adding createdBy field to each phone number -------------------
       }))
     };
 
@@ -2021,7 +2034,7 @@ const UserModal = ({
                     value={phoneNumber}
                     onChange={({ target: { value } }) => setPhoneNumber(value)}
                     onKeyPress={handleKeyPress}
-                    className="border text-sm border-gray-300 rounded-lg p-3 w-full "
+                    className="border text-sm border-gray-300 rounded-lg p-3 w-full"
                     placeholder="Enter phone number"
                   />
                   <button
@@ -2099,14 +2112,7 @@ const UserModal = ({
                 </div>
               </div>
 
-              <div className="flex  text-sm justify-end space-x-4">
-                {/* <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-gray-300"
-                >
-                  Cancel
-                </button> */}
+              <div className="flex text-sm justify-end space-x-4">
                 <button
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-lg"

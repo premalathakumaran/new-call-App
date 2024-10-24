@@ -1649,6 +1649,7 @@ import {
 import { selectMobileNumbers } from '../redux/groupSlice';
 import { FaSyncAlt } from 'react-icons/fa';
 import UserModal from './UserModal';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const Table = () => {
   const dispatch = useDispatch();
@@ -1670,6 +1671,20 @@ const Table = () => {
       dispatch(fetchTableData(token));
     }
   }, [status, dispatch]);
+
+  const formatPhoneNumberWithHyphen = (number) => {
+    if (!number) return '';
+    
+    // Remove any existing formatting
+    const cleaned = number.replace(/\D/g, '');
+    
+    // Try to parse the phone number
+    const phoneObj = parsePhoneNumberFromString('+' + cleaned);
+    if (!phoneObj) return number;
+
+    // Return formatted number with hyphen after country code
+    return `+${phoneObj.countryCallingCode}-${phoneObj.nationalNumber}`;
+  };
 
   const handleEdit = (id, isEditMode) => {
     dispatch(fetchGroupDetails(id));
@@ -1735,16 +1750,6 @@ const Table = () => {
     }
   };
 
-  const formatPhoneNumberWithHyphen = (number) => {
-    if (!number) return '';
-    const cleaned = number.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{2})(\d{10})$/);
-    if (match) {
-      return `+${match[1]}-${match[2]}`;
-    }
-    return number;
-  };
-
   const filteredData = data.filter((item) =>
     item?.groupName?.toLowerCase().includes(searchQuery) ||
     item?.mobileNumbers?.some((phone) =>
@@ -1807,7 +1812,7 @@ const Table = () => {
                           onChange={(e) => handleNumberSelect(e, item.groupId)}
                           value={selectedNumber}
                         >
-                          <option value="text-gray-500">Select a number</option>
+                          <option value="">Select a number</option>
                           {deduplicatePhones(item.mobileNumbers).map((phone, idx) => (
                             <option key={idx} value={phone.mobileNumber}>
                               {phone.mobileNumberWithHypens}
