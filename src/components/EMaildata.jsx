@@ -324,6 +324,199 @@
 // };
 
 // export default EmailData;
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { fetchEmailData } from '../redux/emailSlice';
+
+// const EmailData = () => {
+//   const dispatch = useDispatch();
+//   const { data, status, error } = useSelector((state) => state.email);
+//   const [selectedQuotation, setSelectedQuotation] = useState(null);
+
+//   useEffect(() => {
+//     dispatch(fetchEmailData());
+//   }, [dispatch]);
+
+//   if (status === 'loading') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+//       </div>
+//     );
+//   }
+
+//   if (status === 'failed') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-red-500">
+//         Error: {error}
+//       </div>
+//     );
+//   }
+
+//   const emailData = data?.data?.data || [];
+
+//   const handleViewQuotation = (quotation) => {
+//     setSelectedQuotation(quotation);
+//   };
+
+//   const closePopup = () => {
+//     setSelectedQuotation(null);
+//   };
+
+//   const formatDate = (dateString) => {
+//     return new Date(dateString).toLocaleString('en-US', {
+//       year: 'numeric',
+//       month: 'short',
+//       day: 'numeric',
+//       hour: '2-digit',
+//       minute: '2-digit',
+//     });
+//   };
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <div>
+//         <div className="px-6 py-4">
+//           <h1 className="text-xl  text-gray-800">Email Data</h1>
+//         </div>
+
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full">
+//             <thead>
+//               <tr>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Email ID
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Created On
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Name
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Phone
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Address
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+//                   Actions
+//                 </th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {emailData.map((email, index) => (
+//                 <tr key={index} className="hover:bg-gray-100">
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                     {email.emailId}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                     {formatDate(email.createdOn)}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                     {email.nameData || 'N/A'}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                     {email.phoneNumber || 'N/A'}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                     {email.addressDetails || 'N/A'}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm">
+//                     <button
+//                       onClick={() => handleViewQuotation(email.quotationData)}
+//                       className="text-blue-600 hover:text-blue-600 font-medium"
+//                     >
+//                       View 
+//                     </button>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+
+//       {/* Quotation Modal */}
+//       {selectedQuotation && (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+//           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+//             <div className="p-6">
+//               <div className="flex justify-between items-center mb-4">
+//                 <h3 className="text-lg font-medium text-gray-900">Quotation Details</h3>
+//                 <button
+//                   onClick={closePopup}
+//                   className="text-gray-400 hover:text-gray-500"
+//                 >
+//                   <span className="sr-only">Close</span>
+//                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//                   </svg>
+//                 </button>
+//               </div>
+
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Service Type</p>
+//                   <p className="mt-1">{selectedQuotation["Service Type"]?.replace('Service Type: ', '') || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Cost</p>
+//                   <p className="mt-1">{selectedQuotation["Cost"] || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Weight</p>
+//                   <p className="mt-1">{selectedQuotation["Weight"] || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Dimensions</p>
+//                   <p className="mt-1">{selectedQuotation["Dimensions"] || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Transit Time</p>
+//                   <p className="mt-1">{selectedQuotation["Transit Time"] || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded">
+//                   <p className="text-sm font-medium text-gray-500">Validity</p>
+//                   <p className="mt-1">{selectedQuotation["Validity"] || 'N/A'}</p>
+//                 </div>
+
+//                 <div className="p-4 rounded col-span-full">
+//                   <p className="text-sm font-medium text-gray-500">Summary</p>
+//                   <p className="mt-1">{selectedQuotation["Summarized"] || 'N/A'}</p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-6">
+//                 <button
+//                   onClick={closePopup}
+//                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+//                 >
+//                   Close
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default EmailData;
+
+
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmailData } from '../redux/emailSlice';
@@ -337,6 +530,7 @@ const EmailData = () => {
     dispatch(fetchEmailData());
   }, [dispatch]);
 
+  // Loading state
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -345,15 +539,17 @@ const EmailData = () => {
     );
   }
 
+  // Error state
   if (status === 'failed') {
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
-        Error: {error}
+        Error: {error || 'Something went wrong'}
       </div>
     );
   }
 
-  const emailData = data?.data?.data || [];
+  // Safely extract and validate email data
+  const emailData = Array.isArray(data?.data?.data) ? data.data.data : [];
 
   const handleViewQuotation = (quotation) => {
     setSelectedQuotation(quotation);
@@ -364,20 +560,34 @@ const EmailData = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (e) {
+      return 'Invalid Date';
+    }
   };
+
+  // If no data is available
+  if (emailData.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-500">
+        No email data available
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
       <div>
         <div className="px-6 py-4">
-          <h1 className="text-xl  text-gray-800">Email Data</h1>
+          <h1 className="text-xl text-gray-800">Email Data</h1>
         </div>
 
         <div className="overflow-x-auto">
@@ -408,27 +618,31 @@ const EmailData = () => {
               {emailData.map((email, index) => (
                 <tr key={index} className="hover:bg-gray-100">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email.emailId}
+                    {email?.emailId || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(email.createdOn)}
+                    {formatDate(email?.createdOn)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email.nameData || 'N/A'}
+                    {email?.nameData || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email.phoneNumber || 'N/A'}
+                    {email?.phoneNumber || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email.addressDetails || 'N/A'}
+                    {email?.addressDetails || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <button
-                      onClick={() => handleViewQuotation(email.quotationData)}
-                      className="text-blue-600 hover:text-blue-600 font-medium"
-                    >
-                      View 
-                    </button>
+                    {email?.quotationData ? (
+                      <button
+                        onClick={() => handleViewQuotation(email.quotationData)}
+                        className="text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        View
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">No data</span>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -456,35 +670,23 @@ const EmailData = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Service Type</p>
-                  <p className="mt-1">{selectedQuotation["Service Type"]?.replace('Service Type: ', '') || 'N/A'}</p>
-                </div>
-
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Cost</p>
-                  <p className="mt-1">{selectedQuotation["Cost"] || 'N/A'}</p>
-                </div>
-
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Weight</p>
-                  <p className="mt-1">{selectedQuotation["Weight"] || 'N/A'}</p>
-                </div>
-
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Dimensions</p>
-                  <p className="mt-1">{selectedQuotation["Dimensions"] || 'N/A'}</p>
-                </div>
-
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Transit Time</p>
-                  <p className="mt-1">{selectedQuotation["Transit Time"] || 'N/A'}</p>
-                </div>
-
-                <div className="p-4 rounded">
-                  <p className="text-sm font-medium text-gray-500">Validity</p>
-                  <p className="mt-1">{selectedQuotation["Validity"] || 'N/A'}</p>
-                </div>
+                {[
+                  { label: 'Service Type', key: 'Service Type' },
+                  { label: 'Cost', key: 'Cost' },
+                  { label: 'Weight', key: 'Weight' },
+                  { label: 'Dimensions', key: 'Dimensions' },
+                  { label: 'Transit Time', key: 'Transit Time' },
+                  { label: 'Validity', key: 'Validity' }
+                ].map(({ label, key }) => (
+                  <div key={key} className="p-4 rounded">
+                    <p className="text-sm font-medium text-gray-500">{label}</p>
+                    <p className="mt-1">
+                      {key === 'Service Type' 
+                        ? (selectedQuotation[key]?.replace('Service Type: ', '') || 'N/A')
+                        : (selectedQuotation[key] || 'N/A')}
+                    </p>
+                  </div>
+                ))}
 
                 <div className="p-4 rounded col-span-full">
                   <p className="text-sm font-medium text-gray-500">Summary</p>
