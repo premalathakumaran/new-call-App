@@ -515,59 +515,20 @@
 
 // export default EmailData;
 
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmailData } from '../redux/emailSlice';
 
 const EmailData = () => {
   const dispatch = useDispatch();
-  const [emailData, setEmailData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
-
-  // Get data from Redux store
-  const emailState = useSelector((state) => state.email);
-
+  
+  // Get data and status directly from Redux store
+  const { data: emailData, status, error: reduxError } = useSelector((state) => state.email);
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        await dispatch(fetchEmailData());
-      } catch (err) {
-        setError(err.message || 'Failed to fetch data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+    dispatch(fetchEmailData());
   }, [dispatch]);
-
-  // Process data when Redux state changes
-  useEffect(() => {
-    try {
-      if (emailState?.data?.data?.data) {
-        // Ensure we have an array
-        const processedData = emailState.data.data.data;
-        setEmailData(Array.isArray(processedData) ? processedData : []);
-      } else if (emailState?.data?.data) {
-        // Try alternate data structure
-        const processedData = emailState.data.data;
-        setEmailData(Array.isArray(processedData) ? processedData : []);
-      } else if (emailState?.data) {
-        // Last attempt to get data
-        const processedData = emailState.data;
-        setEmailData(Array.isArray(processedData) ? processedData : []);
-      } else {
-        setEmailData([]);
-      }
-    } catch (err) {
-      console.error('Error processing data:', err);
-      setEmailData([]);
-    }
-  }, [emailState]);
 
   const handleViewQuotation = (quotation) => {
     if (quotation && typeof quotation === 'object') {
@@ -662,7 +623,7 @@ const EmailData = () => {
     );
   };
 
-  if (isLoading) {
+  if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -670,10 +631,10 @@ const EmailData = () => {
     );
   }
 
-  if (error) {
+  if (status === 'failed') {
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
-        Error: {error}
+        Error: {reduxError}
       </div>
     );
   }
