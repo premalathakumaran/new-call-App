@@ -560,7 +560,7 @@ const EmailData = () => {
 
     return (
       <tr key={email.emailId || index} className="hover:bg-gray-100">
-        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+        <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
           {email?.emailId || 'N/A'}
         </td>
         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
@@ -654,7 +654,7 @@ const EmailData = () => {
           <h1 className="text-xl text-gray-800">Email Data</h1>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-h-96">
           <table className="min-w-full">
             <thead>
               <tr>
