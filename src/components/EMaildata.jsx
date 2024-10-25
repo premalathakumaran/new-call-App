@@ -560,19 +560,19 @@ const EmailData = () => {
 
     return (
       <tr key={email.emailId || index} className="hover:bg-gray-100">
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
           {email?.emailId || 'N/A'}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
           {formatDate(email?.createdOn)}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
           {email?.nameData || 'N/A'}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
           {email?.phoneNumber || 'N/A'}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
           {email?.addressDetails || 'N/A'}
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -658,22 +658,22 @@ const EmailData = () => {
           <table className="min-w-full">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Email ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Created On
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Address
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Actions
                 </th>
               </tr>
