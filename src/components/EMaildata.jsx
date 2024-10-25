@@ -516,43 +516,63 @@
 // export default EmailData;
 
 
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmailData } from '../redux/emailSlice';
 
 const EmailData = () => {
   const dispatch = useDispatch();
-  const { data, status, error } = useSelector((state) => state.email);
+  const [emailData, setEmailData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
 
+  // Get data from Redux store
+  const emailState = useSelector((state) => state.email);
+
   useEffect(() => {
-    dispatch(fetchEmailData());
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await dispatch(fetchEmailData());
+      } catch (err) {
+        setError(err.message || 'Failed to fetch data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, [dispatch]);
 
-  // Loading state
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (status === 'failed') {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-red-500">
-        Error: {error || 'Something went wrong'}
-      </div>
-    );
-  }
-
-  // Safely extract and validate email data
-  const emailData = Array.isArray(data?.data?.data) ? data.data.data : [];
+  // Process data when Redux state changes
+  useEffect(() => {
+    try {
+      if (emailState?.data?.data?.data) {
+        // Ensure we have an array
+        const processedData = emailState.data.data.data;
+        setEmailData(Array.isArray(processedData) ? processedData : []);
+      } else if (emailState?.data?.data) {
+        // Try alternate data structure
+        const processedData = emailState.data.data;
+        setEmailData(Array.isArray(processedData) ? processedData : []);
+      } else if (emailState?.data) {
+        // Last attempt to get data
+        const processedData = emailState.data;
+        setEmailData(Array.isArray(processedData) ? processedData : []);
+      } else {
+        setEmailData([]);
+      }
+    } catch (err) {
+      console.error('Error processing data:', err);
+      setEmailData([]);
+    }
+  }, [emailState]);
 
   const handleViewQuotation = (quotation) => {
-    setSelectedQuotation(quotation);
+    if (quotation && typeof quotation === 'object') {
+      setSelectedQuotation(quotation);
+    }
   };
 
   const closePopup = () => {
@@ -574,8 +594,91 @@ const EmailData = () => {
     }
   };
 
-  // If no data is available
-  if (emailData.length === 0) {
+  const renderTableRow = (email, index) => {
+    if (!email || typeof email !== 'object') return null;
+
+    return (
+      <tr key={email.emailId || index} className="hover:bg-gray-100">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {email?.emailId || 'N/A'}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {formatDate(email?.createdOn)}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {email?.nameData || 'N/A'}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {email?.phoneNumber || 'N/A'}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {email?.addressDetails || 'N/A'}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm">
+          {email?.quotationData && typeof email.quotationData === 'object' ? (
+            <button
+              onClick={() => handleViewQuotation(email.quotationData)}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              View
+            </button>
+          ) : (
+            <span className="text-gray-400">No data</span>
+          )}
+        </td>
+      </tr>
+    );
+  };
+
+  const renderQuotationDetails = () => {
+    if (!selectedQuotation || typeof selectedQuotation !== 'object') return null;
+
+    const quotationFields = [
+      { label: 'Service Type', key: 'Service Type' },
+      { label: 'Cost', key: 'Cost' },
+      { label: 'Weight', key: 'Weight' },
+      { label: 'Dimensions', key: 'Dimensions' },
+      { label: 'Transit Time', key: 'Transit Time' },
+      { label: 'Validity', key: 'Validity' }
+    ];
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {quotationFields.map(({ label, key }) => (
+          <div key={key} className="p-4 rounded">
+            <p className="text-sm font-medium text-gray-500">{label}</p>
+            <p className="mt-1">
+              {key === 'Service Type'
+                ? (selectedQuotation[key]?.replace('Service Type: ', '') || 'N/A')
+                : (selectedQuotation[key] || 'N/A')}
+            </p>
+          </div>
+        ))}
+        <div className="p-4 rounded col-span-full">
+          <p className="text-sm font-medium text-gray-500">Summary</p>
+          <p className="mt-1">{selectedQuotation["Summarized"] || 'N/A'}</p>
+        </div>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        Error: {error}
+      </div>
+    );
+  }
+
+  if (!Array.isArray(emailData) || emailData.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-500">
         No email data available
@@ -615,37 +718,7 @@ const EmailData = () => {
               </tr>
             </thead>
             <tbody>
-              {emailData.map((email, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email?.emailId || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(email?.createdOn)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email?.nameData || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email?.phoneNumber || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {email?.addressDetails || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {email?.quotationData ? (
-                      <button
-                        onClick={() => handleViewQuotation(email.quotationData)}
-                        className="text-blue-600 hover:text-blue-700 font-medium"
-                      >
-                        View
-                      </button>
-                    ) : (
-                      <span className="text-gray-400">No data</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {emailData.map((email, index) => renderTableRow(email, index))}
             </tbody>
           </table>
         </div>
@@ -668,32 +741,7 @@ const EmailData = () => {
                   </svg>
                 </button>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { label: 'Service Type', key: 'Service Type' },
-                  { label: 'Cost', key: 'Cost' },
-                  { label: 'Weight', key: 'Weight' },
-                  { label: 'Dimensions', key: 'Dimensions' },
-                  { label: 'Transit Time', key: 'Transit Time' },
-                  { label: 'Validity', key: 'Validity' }
-                ].map(({ label, key }) => (
-                  <div key={key} className="p-4 rounded">
-                    <p className="text-sm font-medium text-gray-500">{label}</p>
-                    <p className="mt-1">
-                      {key === 'Service Type' 
-                        ? (selectedQuotation[key]?.replace('Service Type: ', '') || 'N/A')
-                        : (selectedQuotation[key] || 'N/A')}
-                    </p>
-                  </div>
-                ))}
-
-                <div className="p-4 rounded col-span-full">
-                  <p className="text-sm font-medium text-gray-500">Summary</p>
-                  <p className="mt-1">{selectedQuotation["Summarized"] || 'N/A'}</p>
-                </div>
-              </div>
-
+              {renderQuotationDetails()}
               <div className="mt-6">
                 <button
                   onClick={closePopup}
