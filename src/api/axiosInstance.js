@@ -112,3 +112,174 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
+
+
+
+
+
+
+// new methode for referhs token ---------------------
+
+// import axios from 'axios';
+
+// // Simple JWT decoder function to replace jwt-decode package
+// function decodeJwt(token) {
+//   try {
+//     const base64Url = token.split('.')[1];
+//     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//     const jsonPayload = decodeURIComponent(
+//       atob(base64)
+//         .split('')
+//         .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+//         .join('')
+//     );
+//     return JSON.parse(jsonPayload);
+//   } catch (error) {
+//     console.error('Error decoding JWT:', error);
+//     return null;
+//   }
+// }
+
+// class TokenService {
+//   constructor() {
+//     this.refreshTimeout = null;
+//     this.tokenRefreshThreshold = 60; // Refresh token 60 seconds before expiry
+//   }
+
+//   getToken() {
+//     return localStorage.getItem('jwt');
+//   }
+
+//   getRefreshToken() {
+//     return localStorage.getItem('refreshToken');
+//   }
+
+//   setToken(token) {
+//     localStorage.setItem('jwt', token);
+//     this.setupTokenRefresh(token);
+//   }
+
+//   setRefreshToken(refreshToken) {
+//     localStorage.setItem('refreshToken', refreshToken);
+//   }
+
+//   clearTokens() {
+//     localStorage.removeItem('jwt');
+//     localStorage.removeItem('refreshToken');
+//     if (this.refreshTimeout) {
+//       clearTimeout(this.refreshTimeout);
+//     }
+//   }
+
+//   setupTokenRefresh(token) {
+//     if (this.refreshTimeout) {
+//       clearTimeout(this.refreshTimeout);
+//     }
+
+//     try {
+//       const decoded = decodeJwt(token);
+//       if (!decoded || !decoded.exp) {
+//         throw new Error('Invalid token format');
+//       }
+
+//       const expiryTime = decoded.exp * 1000; // Convert to milliseconds
+//       const currentTime = Date.now();
+//       const timeUntilRefresh = expiryTime - currentTime - (this.tokenRefreshThreshold * 1000);
+
+//       if (timeUntilRefresh > 0) {
+//         this.refreshTimeout = setTimeout(
+//           () => this.refreshToken(),
+//           timeUntilRefresh
+//         );
+//       } else {
+//         // Token is already expired or very close to expiry
+//         this.refreshToken();
+//       }
+//     } catch (error) {
+//       console.error('Error setting up token refresh:', error);
+//     }
+//   }
+
+//   async refreshToken() {
+//     const refreshToken = this.getRefreshToken();
+
+//     if (!refreshToken) {
+//       console.error('No refresh token found');
+//       this.handleAuthError();
+//       return null;
+//     }
+
+//     try {
+//       const response = await axios.post('http://13.127.211.81:8085/user/refreshToken', {
+//         token: refreshToken, 
+//       });
+
+//       const { jwt } = response.data;
+//       this.setToken(jwt);
+//       return jwt;
+//     } catch (error) {
+//       console.error('Error refreshing token:', error);
+//       this.handleAuthError();
+//       return null;
+//     }
+//   }
+
+//   handleAuthError() {
+//     this.clearTokens();
+//     window.dispatchEvent(new CustomEvent('authError'));
+//   }
+// }
+
+// const tokenService = new TokenService();
+
+// const apiClient = axios.create({
+//   baseURL: 'https://www.annulartech.net',
+// });
+
+// apiClient.interceptors.request.use(
+//   (config) => {
+//     const token = tokenService.getToken();
+//     if (token) {
+//       // Fixed: Using proper string concatenation with quotes
+//       config.headers['Authorization'] = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+// apiClient.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+
+//       const newToken = await tokenService.refreshToken();
+//       if (newToken) {
+//         // Fixed: Using proper string concatenation with quotes
+//         originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+//         return apiClient(originalRequest);
+//       }
+//     }
+
+//     return Promise.reject(error);
+//   }
+// );
+
+// // Initialize token refresh on startup if a token exists
+// const existingToken = tokenService.getToken();
+// if (existingToken) {
+//   tokenService.setupTokenRefresh(existingToken);
+// }
+
+// // Event listener for handling auth errors
+// window.addEventListener('authError', () => {
+//   console.log('Authentication error occurred. Redirecting to login...');
+//   // Add your redirect logic here, for example:
+//   // window.location.href = '/login';
+// });
+
+// export default apiClient;
+// export { tokenService };

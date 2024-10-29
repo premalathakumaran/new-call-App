@@ -515,6 +515,433 @@
 
 // export default EmailData;
 
+
+//---------------------------------------------------------
+// import React, { useState, useEffect } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { fetchEmailData } from '../redux/emailSlice';
+
+// const EmailData = () => {
+//   const dispatch = useDispatch();
+//   const [selectedQuotation, setSelectedQuotation] = useState(null);
+  
+//   // Get data and status directly from Redux store
+//   const { data: emailData, status, error: reduxError } = useSelector((state) => state.email);
+  
+//   useEffect(() => {
+//     dispatch(fetchEmailData());
+//   }, [dispatch]);
+
+//   const handleViewQuotation = (quotation) => {
+//     if (quotation && typeof quotation === 'object') {
+//       setSelectedQuotation(quotation);
+//     }
+//   };
+
+//   const closePopup = () => {
+//     setSelectedQuotation(null);
+//   };
+
+//   const formatDate = (dateString) => {
+//     if (!dateString) return 'N/A';
+//     try {
+//       return new Date(dateString).toLocaleString('en-US', {
+//         year: 'numeric',
+//         month: 'short',
+//         day: 'numeric',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//       });
+//     } catch (e) {
+//       return 'Invalid Date';
+//     }
+//   };
+
+//   const renderTableRow = (email, index) => {
+//     if (!email || typeof email !== 'object') return null;
+
+//     return (
+//       <tr key={email.emailId || index} className="hover:bg-gray-100">
+//         <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
+//           {email?.emailId || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {formatDate(email?.createdOn)}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.nameData || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.phoneNumber || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.addressDetails || 'N/A'}
+//         </td>
+//         <td className="px-6 py-4 whitespace-nowrap text-sm">
+//           {email?.quotationData && typeof email.quotationData === 'object' ? (
+//             <button
+//               onClick={() => handleViewQuotation(email.quotationData)}
+//               className="text-blue-600 hover:text-blue-700 font-medium"
+//             >
+//               View
+//             </button>
+//           ) : (
+//             <span className="text-gray-400">No data</span>
+//           )}
+//         </td>
+//       </tr>
+//     );
+//   };
+
+//   const renderQuotationDetails = () => {
+//     if (!selectedQuotation || typeof selectedQuotation !== 'object') return null;
+
+//     const quotationFields = [
+//       { label: 'Service Type', key: 'Service Type' },
+//       { label: 'Cost', key: 'Cost' },
+//       { label: 'Weight', key: 'Weight' },
+//       { label: 'Dimensions', key: 'Dimensions' },
+//       { label: 'Transit Time', key: 'Transit Time' },
+//       { label: 'Validity', key: 'Validity' }
+//     ];
+
+//     return (
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//         {quotationFields.map(({ label, key }) => (
+//           <div key={key} className="p-4 rounded">
+//             <p className="text-sm font-medium text-gray-500">{label}</p>
+//             <p className="mt-1">
+//               {key === 'Service Type'
+//                 ? (selectedQuotation[key]?.replace('Service Type: ', '') || 'N/A')
+//                 : (selectedQuotation[key] || 'N/A')}
+//             </p>
+//           </div>
+//         ))}
+//         <div className="p-4 rounded col-span-full">
+//           <p className="text-sm font-medium text-gray-500">Summary</p>
+//           <p className="mt-1">{selectedQuotation["Summarized"] || 'N/A'}</p>
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   if (status === 'loading') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+//       </div>
+//     );
+//   }
+
+//   if (status === 'failed') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-red-500">
+//         Error: {reduxError}
+//       </div>
+//     );
+//   }
+
+//   if (!Array.isArray(emailData) || emailData.length === 0) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-gray-500">
+//         No email data available
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <div>
+//         <div className="px-6 py-4">
+//           <h1 className="text-xl text-gray-800">Email Data</h1>
+//         </div>
+
+//         <div className="overflow-x-auto max-h-96">
+//           <table className="min-w-full">
+//             <thead>
+//               <tr>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Email ID
+//                 </th>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Created On
+//                 </th>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Name
+//                 </th>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Phone
+//                 </th>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Address
+//                 </th>
+//                 <th className="px-6 py-4 text-left text-sm font-semibold">
+//                   Actions
+//                 </th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {emailData.map((email, index) => renderTableRow(email, index))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+
+//       {/* Quotation Modal */}
+//       {selectedQuotation && (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+//           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+//             <div className="p-6">
+//               <div className="flex justify-between items-center mb-4">
+//                 <h3 className="text-lg font-medium text-gray-900">Quotation Details</h3>
+//                 <button
+//                   onClick={closePopup}
+//                   className="text-gray-400 hover:text-gray-500"
+//                 >
+//                   <span className="sr-only">Close</span>
+//                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//                   </svg>
+//                 </button>
+//               </div>
+//               {renderQuotationDetails()}
+//               <div className="mt-6">
+//                 <button
+//                   onClick={closePopup}
+//                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+//                 >
+//                   Close
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default EmailData;
+
+
+
+
+
+// it show the header of the table after we delete the all data in the table -------------------------------------
+// import React, { useState, useEffect } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { fetchEmailData } from '../redux/emailSlice';
+
+// const EmailData = () => {
+//   const dispatch = useDispatch();
+//   const [selectedQuotation, setSelectedQuotation] = useState(null);
+  
+//   // Get data and status directly from Redux store
+//   const { data: emailData, status, error: reduxError } = useSelector((state) => state.email);
+  
+//   useEffect(() => {
+//     dispatch(fetchEmailData());
+//   }, [dispatch]);
+
+//   const handleViewQuotation = (quotation) => {
+//     if (quotation && typeof quotation === 'object') {
+//       setSelectedQuotation(quotation);
+//     }
+//   };
+
+//   const closePopup = () => {
+//     setSelectedQuotation(null);
+//   };
+
+//   const formatDate = (dateString) => {
+//     if (!dateString) return 'N/A';
+//     try {
+//       return new Date(dateString).toLocaleString('en-US', {
+//         year: 'numeric',
+//         month: 'short',
+//         day: 'numeric',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//       });
+//     } catch (e) {
+//       return 'Invalid Date';
+//     }
+//   };
+
+//   const renderTableRow = (email, index) => {
+//     if (!email || typeof email !== 'object') return null;
+
+//     return (
+//       <tr key={email.emailId || index} className="hover:bg-gray-100">
+//         <td className="px-4 py-2 text-gray-500 text-sm cursor-pointer">
+//           {email?.emailId || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {formatDate(email?.createdOn)}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.nameData || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.phoneNumber || 'N/A'}
+//         </td>
+//         <td className="px-4 py-4 text-gray-500 text-sm cursor-pointer">
+//           {email?.addressDetails || 'N/A'}
+//         </td>
+//         <td className="px-6 py-4 whitespace-nowrap text-sm">
+//           {email?.quotationData && typeof email.quotationData === 'object' ? (
+//             <button
+//               onClick={() => handleViewQuotation(email.quotationData)}
+//               className="text-blue-600 hover:text-blue-700 font-medium"
+//             >
+//               View
+//             </button>
+//           ) : (
+//             <span className="text-gray-400">No data</span>
+//           )}
+//         </td>
+//       </tr>
+//     );
+//   };
+
+//   const renderQuotationDetails = () => {
+//     if (!selectedQuotation || typeof selectedQuotation !== 'object') return null;
+
+//     const quotationFields = [
+//       { label: 'Service Type', key: 'Service Type' },
+//       { label: 'Cost', key: 'Cost' },
+//       { label: 'Weight', key: 'Weight' },
+//       { label: 'Dimensions', key: 'Dimensions' },
+//       { label: 'Transit Time', key: 'Transit Time' },
+//       { label: 'Validity', key: 'Validity' }
+//     ];
+
+//     return (
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//         {quotationFields.map(({ label, key }) => (
+//           <div key={key} className="p-4 rounded">
+//             <p className="text-sm font-medium text-gray-500">{label}</p>
+//             <p className="mt-1">
+//               {key === 'Service Type'
+//                 ? (selectedQuotation[key]?.replace('Service Type: ', '') || 'N/A')
+//                 : (selectedQuotation[key] || 'N/A')}
+//             </p>
+//           </div>
+//         ))}
+//         <div className="p-4 rounded col-span-full">
+//           <p className="text-sm font-medium text-gray-500">Summary</p>
+//           <p className="mt-1">{selectedQuotation["Summarized"] || 'N/A'}</p>
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   const renderTable = () => {
+//     return (
+//       <div className="overflow-x-auto max-h-96">
+//         <table className="min-w-full">
+//           <thead>
+//             <tr>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Email ID
+//               </th>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Created On
+//               </th>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Name
+//               </th>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Phone
+//               </th>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Address
+//               </th>
+//               <th className="px-6 py-4 text-left text-sm font-semibold">
+//                 Actions
+//               </th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {Array.isArray(emailData) && emailData.length > 0 ? (
+//               emailData.map((email, index) => renderTableRow(email, index))
+//             ) : (
+//               <tr>
+//                 <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+//                   No email data available
+//                 </td>
+//               </tr>
+//             )}
+//           </tbody>
+//         </table>
+//       </div>
+//     );
+//   };
+
+//   if (status === 'loading') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+//       </div>
+//     );
+//   }
+
+//   if (status === 'failed') {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-red-500">
+//         Error: {reduxError}
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <div>
+//         <div className="px-6 py-4">
+//           <h1 className="text-xl text-gray-800">Email Data</h1>
+//         </div>
+//         {renderTable()}
+//       </div>
+
+//       {/* Quotation Modal */}
+//       {selectedQuotation && (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+//           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+//             <div className="p-6">
+//               <div className="flex justify-between items-center mb-4">
+//                 <h3 className="text-lg font-medium text-gray-900">Quotation Details</h3>
+//                 <button
+//                   onClick={closePopup}
+//                   className="text-gray-400 hover:text-gray-500"
+//                 >
+//                   <span className="sr-only">Close</span>
+//                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//                   </svg>
+//                 </button>
+//               </div>
+//               {renderQuotationDetails()}
+//               <div className="mt-6">
+//                 <button
+//                   onClick={closePopup}
+//                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+//                 >
+//                   Close
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default EmailData;
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmailData } from '../redux/emailSlice';
@@ -522,13 +949,19 @@ import { fetchEmailData } from '../redux/emailSlice';
 const EmailData = () => {
   const dispatch = useDispatch();
   const [selectedQuotation, setSelectedQuotation] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
   
-  // Get data and status directly from Redux store
   const { data: emailData, status, error: reduxError } = useSelector((state) => state.email);
-  
+
   useEffect(() => {
     dispatch(fetchEmailData());
   }, [dispatch]);
+
+  // Reset to first page when data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [emailData]);
 
   const handleViewQuotation = (quotation) => {
     if (quotation && typeof quotation === 'object') {
@@ -553,6 +986,118 @@ const EmailData = () => {
     } catch (e) {
       return 'Invalid Date';
     }
+  };
+
+  // Pagination calculations
+  const totalItems = emailData?.length || 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = Array.isArray(emailData) ? emailData.slice(startIndex, endIndex) : [];
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top of table when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    const pages = [];
+    
+    // First page
+    if (startPage > 1) {
+      pages.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className="px-3 py-1 mx-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pages.push(
+          <span key="ellipsis1" className="px-2">
+            ...
+          </span>
+        );
+      }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 mx-1 rounded ${
+            currentPage === i
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // Last page
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push(
+          <span key="ellipsis2" className="px-2">
+            ...
+          </span>
+        );
+      }
+      pages.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="px-3 py-1 mx-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded ${
+            currentPage === 1
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Previous
+        </button>
+        {pages}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 rounded ${
+            currentPage === totalPages
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Next
+        </button>
+      </div>
+    );
   };
 
   const renderTableRow = (email, index) => {
@@ -623,6 +1168,48 @@ const EmailData = () => {
     );
   };
 
+  const renderTable = () => {
+    return (
+      <div className="overflow-x-auto max-h-96">
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Email ID
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Created On
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Name
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Phone
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Address
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.length > 0 ? (
+              currentData.map((email, index) => renderTableRow(email, index))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                  No email data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -639,53 +1226,19 @@ const EmailData = () => {
     );
   }
 
-  if (!Array.isArray(emailData) || emailData.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-gray-500">
-        No email data available
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto p-4">
       <div>
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 flex justify-between items-center">
           <h1 className="text-xl text-gray-800">Email Data</h1>
+          <div className="text-sm text-gray-500">
+            Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of {totalItems} items
+          </div>
         </div>
-
-        <div className="overflow-x-auto max-h-96">
-          <table className="min-w-full">
-            <thead>
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Email ID
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Created On
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Phone
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Address
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {emailData.map((email, index) => renderTableRow(email, index))}
-            </tbody>
-          </table>
-        </div>
+        {renderTable()}
+        {renderPagination()}
       </div>
 
-      {/* Quotation Modal */}
       {selectedQuotation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
@@ -698,19 +1251,16 @@ const EmailData = () => {
                 >
                   <span className="sr-only">Close</span>
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
               {renderQuotationDetails()}
-              <div className="mt-6">
-                <button
-                  onClick={closePopup}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                >
-                  Close
-                </button>
-              </div>
             </div>
           </div>
         </div>

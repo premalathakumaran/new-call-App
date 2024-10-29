@@ -855,11 +855,226 @@
 
 
 
-// trying code ------------
+ // toasty adding code------------------------------------------------------------------
+// import React, { useEffect, useState } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
+// import {
+//   setGroupName,
+//   addMobileNumber,
+//   setStatus,
+//   toggleFormVisibility,
+//   resetForm,
+//   selectMobileNumbers,
+//   selectGroupName,
+//   selectStatus,
+//   selectIsFormVisible,
+//   removeMobileNumber,
+//   saveGroupDetails,
+// } from '../redux/groupSlice';
+// import { fetchTableData } from '../redux/tableSlice';
+// import axios from 'axios';
+// import { FaTrash } from 'react-icons/fa';
+// import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
+// const GroupForm = () => {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+//   const groupName = useSelector(selectGroupName);
+//   const mobileNumbers = useSelector(selectMobileNumbers);
+//   const status = useSelector(selectStatus);
+//   const isFormVisible = useSelector(selectIsFormVisible);
+//   const [currentMobileNumber, setCurrentMobileNumber] = useState('');
+//   const [selectedCountryCode, setSelectedCountryCode] = useState('US');
+//   const [countries, setCountries] = useState([]);
+//   const [error, setError] = useState('');
+
+//   useEffect(() => {
+//     const fetchCountries = async () => {
+//       try {
+//         const response = await axios.get('https://restcountries.com/v3.1/all');
+//         const countryData = response.data.map((country) => ({
+//           isoCode: country.cca2,
+//           name: country.name.common,
+//         }));
+//         setCountries(countryData);
+//       } catch (error) {
+//         setError('Error fetching country data');
+//       }
+//     };
+//     fetchCountries();
+//   }, []);
+
+//   const handleGroupNameChange = (e) => dispatch(setGroupName(e.target.value));
+//   const handleMobileNumberChange = (e) => setCurrentMobileNumber(e.target.value);
+//   const handleCountryCodeChange = (e) => setSelectedCountryCode(e.target.value);
+//   const handleStatusChange = (e) => dispatch(setStatus(e.target.value));
+
+//   const handleAddMobileNumber = () => {
+//     if (currentMobileNumber.trim() !== '') {
+//       const phoneNumber = parsePhoneNumberFromString(currentMobileNumber, selectedCountryCode);
+//       if (phoneNumber && phoneNumber.isValid()) {
+//         const countryCode = phoneNumber.countryCallingCode;
+//         const nationalNumber = phoneNumber.nationalNumber;
+//         const formattedNumber = `+${countryCode}${nationalNumber}`;
+//         const apiNumber = `+${countryCode}-${nationalNumber}`;
+        
+//         // Add both the formatted and API numbers to the state
+//         dispatch(addMobileNumber({ number: formattedNumber, numberHypens: apiNumber }));
+//         setCurrentMobileNumber('');
+//         setError('');
+//       } else {
+//         setError('Invalid phone number for the selected country code');
+//       }
+//     }
+//   };
+
+//   const handleKeyDown = (e) => {
+//     if (e.key === 'Enter') {
+//       e.preventDefault();
+//       handleAddMobileNumber();
+//     }
+//   };
+
+//   const handleDeleteMobileNumber = (index) => {
+//     dispatch(removeMobileNumber(index));
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     if (groupName.trim() === '') {
+//       setError('Group name is required');
+//       return;
+//     }
+
+//     dispatch(saveGroupDetails({ groupName, mobileNumbers, status }))
+//       .unwrap()
+//       .then(() => {
+//         const token = localStorage.getItem('jwt');
+//         if (token) {
+//           dispatch(fetchTableData(token)); // Fetch updated data
+//         }
+//         dispatch(resetForm()); // Reset the form values
+//         setError(''); // Clear any existing error
+//         dispatch(toggleFormVisibility()); // Automatically hide the form
+//         navigate('/admin'); // Navigate to the admin page after successful submission
+//       })
+//       .catch((error) => {
+//         setError(error || 'Failed to save group details');
+//       });
+//   };
+
+//   if (!isFormVisible) return null;
+
+//   return (
+//     <div className="bg-white p-6 rounded-lg  max-w-lg mx-auto">
+//       <h2 className="text-xl font-bold mb-6">New Group</h2>
+//       <form onSubmit={handleSubmit} className="space-y-6">
+//         {error && <p className="text-red-500">{error}</p>}
+//         <div>
+//           <label className="block text-sm font-medium mb-2">Group Name:</label>
+//           <input
+//             type="text"
+//             value={groupName}
+//             onChange={handleGroupNameChange}
+//             className="border border-gray-300 rounded-lg p-3 w-full"
+//           />
+//         </div>
+
+
+
+//         <div>
+//   <label className="block text-sm font-medium mb-2">Mobile Numbers:</label>
+//   <div className="flex">
+//     <select
+//       value={selectedCountryCode}
+//       onChange={handleCountryCodeChange}
+//       className="border border-gray-300 rounded-lg p-3 w-24"
+//     >
+//       {countries.map((country, index) => (
+//         <option key={index} value={country.isoCode}>
+//           {country.name}
+//         </option>
+//       ))}
+//     </select>
+//     <input
+//       type="text"
+//       value={currentMobileNumber}
+//       onChange={handleMobileNumberChange}
+//       onKeyDown={handleKeyDown}
+//       placeholder="Enter mobile number"
+//       className="border text-sm border-gray-300 rounded-lg p-3 flex-1"
+//     />
+//     <button
+//       type="button"
+//       onClick={handleAddMobileNumber}
+//       className="text-white text-sm rounded-lg p-3 ml-2"
+//       style={{ backgroundColor: '#134572' }}
+//     >
+//       Add
+//     </button>
+//   </div>
+
+//   {/* Container for table with a fixed height and scroll */}
+//   <div className="mt-4 w-full h-20 overflow-y-auto border border-gray-300 rounded-lg">
+//     <table className="w-full border-collapse">
+//       <thead>
+//         <tr className="bg-gray-100">
+//           <th className="border text-sm border-gray-300 px-4 py-2 text-left">Mobile Number</th>
+//           <th className="border text-sm border-gray-300 px-4 py-2 text-left">Action</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {mobileNumbers.map((mobile, index) => (
+//           <tr key={index} className="border-t">
+//             <td className="border border-gray-300 px-4 py-2">{mobile.number}</td>
+//             <td className="border border-gray-300 px-4 py-2">
+//               <button
+//                 type="button"
+//                 onClick={() => handleDeleteMobileNumber(index)}
+//                 className="text-red-500 hover:text-red-700"
+//               >
+//                 <FaTrash />
+//               </button>
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   </div>
+// </div>
+
+
+
+
+//         <div>
+//           <label className="block text-sm font-medium mb-2">Status:</label>
+//           <select
+//             value={status}
+//             onChange={handleStatusChange}
+//             className="border text-sm border-gray-300 rounded-lg p-3 w-full"
+//           >
+//             <option value="Active">Active</option>
+//             <option value="Inactive">Inactive</option>
+//           </select>
+//         </div>
+//         <button type="submit" className=" text-white text-sm rounded-lg p-3 w-full" style={{ backgroundColor: '#134572' }}>
+//           Save Group
+//         </button>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default GroupForm;
+
+
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   setGroupName,
   addMobileNumber,
@@ -900,6 +1115,7 @@ const GroupForm = () => {
         }));
         setCountries(countryData);
       } catch (error) {
+        toast.error('Error fetching country data');
         setError('Error fetching country data');
       }
     };
@@ -920,12 +1136,13 @@ const GroupForm = () => {
         const formattedNumber = `+${countryCode}${nationalNumber}`;
         const apiNumber = `+${countryCode}-${nationalNumber}`;
         
-        // Add both the formatted and API numbers to the state
         dispatch(addMobileNumber({ number: formattedNumber, numberHypens: apiNumber }));
         setCurrentMobileNumber('');
         setError('');
+        toast.success('Mobile number added successfully');
       } else {
         setError('Invalid phone number for the selected country code');
+        toast.error('Invalid phone number for the selected country code');
       }
     }
   };
@@ -939,36 +1156,48 @@ const GroupForm = () => {
 
   const handleDeleteMobileNumber = (index) => {
     dispatch(removeMobileNumber(index));
+    toast.success('Mobile number removed');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (groupName.trim() === '') {
       setError('Group name is required');
+      toast.error('Group name is required');
       return;
     }
 
-    dispatch(saveGroupDetails({ groupName, mobileNumbers, status }))
-      .unwrap()
-      .then(() => {
-        const token = localStorage.getItem('jwt');
-        if (token) {
-          dispatch(fetchTableData(token)); // Fetch updated data
-        }
-        dispatch(resetForm()); // Reset the form values
-        setError(''); // Clear any existing error
-        dispatch(toggleFormVisibility()); // Automatically hide the form
-        navigate('/admin'); // Navigate to the admin page after successful submission
-      })
-      .catch((error) => {
-        setError(error || 'Failed to save group details');
-      });
+    // Show loading toast
+    const loadingToast = toast.loading('Creating group...');
+
+    try {
+      await dispatch(saveGroupDetails({ groupName, mobileNumbers, status })).unwrap();
+      const token = localStorage.getItem('jwt');
+      if (token) {
+        await dispatch(fetchTableData(token));
+      }
+      
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success('Group created successfully!');
+      
+      dispatch(resetForm());
+      setError('');
+      dispatch(toggleFormVisibility());
+      navigate('/admin');
+    } catch (error) {
+      // Dismiss loading toast and show error
+      toast.dismiss(loadingToast);
+      const errorMessage = error || 'Failed to save group details';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    }
   };
 
   if (!isFormVisible) return null;
 
   return (
-    <div className="bg-white p-6 rounded-lg  max-w-lg mx-auto">
+    <div className="bg-white p-6 rounded-lg max-w-lg mx-auto">
       <h2 className="text-xl font-bold mb-6">New Group</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
@@ -982,71 +1211,65 @@ const GroupForm = () => {
           />
         </div>
 
-
-
         <div>
-  <label className="block text-sm font-medium mb-2">Mobile Numbers:</label>
-  <div className="flex">
-    <select
-      value={selectedCountryCode}
-      onChange={handleCountryCodeChange}
-      className="border border-gray-300 rounded-lg p-3 w-24"
-    >
-      {countries.map((country, index) => (
-        <option key={index} value={country.isoCode}>
-          {country.name}
-        </option>
-      ))}
-    </select>
-    <input
-      type="text"
-      value={currentMobileNumber}
-      onChange={handleMobileNumberChange}
-      onKeyDown={handleKeyDown}
-      placeholder="Enter mobile number"
-      className="border text-sm border-gray-300 rounded-lg p-3 flex-1"
-    />
-    <button
-      type="button"
-      onClick={handleAddMobileNumber}
-      className="text-white text-sm rounded-lg p-3 ml-2"
-      style={{ backgroundColor: '#134572' }}
-    >
-      Add
-    </button>
-  </div>
+          <label className="block text-sm font-medium mb-2">Mobile Numbers:</label>
+          <div className="flex">
+            <select
+              value={selectedCountryCode}
+              onChange={handleCountryCodeChange}
+              className="border border-gray-300 rounded-lg p-3 w-24"
+            >
+              {countries.map((country, index) => (
+                <option key={index} value={country.isoCode}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              value={currentMobileNumber}
+              onChange={handleMobileNumberChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter mobile number"
+              className="border text-sm border-gray-300 rounded-lg p-3 flex-1"
+            />
+            <button
+              type="button"
+              onClick={handleAddMobileNumber}
+              className="text-white text-sm rounded-lg p-3 ml-2"
+              style={{ backgroundColor: '#134572' }}
+            >
+              Add
+            </button>
+          </div>
 
-  {/* Container for table with a fixed height and scroll */}
-  <div className="mt-4 w-full h-20 overflow-y-auto border border-gray-300 rounded-lg">
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border text-sm border-gray-300 px-4 py-2 text-left">Mobile Number</th>
-          <th className="border text-sm border-gray-300 px-4 py-2 text-left">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {mobileNumbers.map((mobile, index) => (
-          <tr key={index} className="border-t">
-            <td className="border border-gray-300 px-4 py-2">{mobile.number}</td>
-            <td className="border border-gray-300 px-4 py-2">
-              <button
-                type="button"
-                onClick={() => handleDeleteMobileNumber(index)}
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrash />
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-
+          <div className="mt-4 w-full h-20 overflow-y-auto border border-gray-300 rounded-lg">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border text-sm border-gray-300 px-4 py-2 text-left">Mobile Number</th>
+                  <th className="border text-sm border-gray-300 px-4 py-2 text-left">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mobileNumbers.map((mobile, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="border border-gray-300 px-4 py-2">{mobile.number}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMobileNumber(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">Status:</label>
@@ -1059,7 +1282,11 @@ const GroupForm = () => {
             <option value="Inactive">Inactive</option>
           </select>
         </div>
-        <button type="submit" className=" text-white text-sm rounded-lg p-3 w-full" style={{ backgroundColor: '#134572' }}>
+        <button 
+          type="submit" 
+          className="text-white text-sm rounded-lg p-3 w-full" 
+          style={{ backgroundColor: '#134572' }}
+        >
           Save Group
         </button>
       </form>
